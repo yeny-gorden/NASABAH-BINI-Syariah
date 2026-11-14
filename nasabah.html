@@ -1,17 +1,309 @@
 <!DOCTYPE html>
 <html lang="id" class="dark">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BINI Syariah - Tabungan Suami Kesayangan Mamah</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <!-- Pustaka Kamera QR Asli -->
-    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #020617; }
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>BINI Syariah - Tabungan Suami Kesayangan Mamah</title>
+ <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+ <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+</head>
+
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-orange-500 selection:text-white">
+ <div class="max-w-md mx-auto min-h-screen bg-slate-900 shadow-2xl shadow-black/80 flex flex-col justify-between relative overflow-x-hidden border-x border-slate-800/80 pb-24">
+  <div id="drawerBackdrop" onclick="toggleDrawer(false)" class="fixed inset-0 bg-black/75 backdrop-blur-xs z-40 hidden transition-opacity duration-300 opacity-0"></div>
+  <!-- HAMBURGER MENU DRAWER NASABAH -->
+  <aside id="navDrawer" class="fixed top-0 left-0 bottom-0 w-72 max-w-[82vw] bg-slate-950 border-r border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 ease-out flex flex-col justify-between">
+   <div>
+    <div class="p-6 bg-gradient-to-br from-slate-900 to-orange-950/60 border-b border-slate-800">
+     <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center space-x-2.5">
+       <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white font-extrabold text-base tracking-tighter shadow-lg shadow-orange-500/30 border border-orange-400/40">
+        69
+       </div>
+       <div>
+        <span class="font-extrabold tracking-tight text-sm text-white block leading-tight">BINI <span class="text-orange-400">SYARIAH</span></span>
+        <span class="text-[9px] text-orange-300 font-semibold tracking-wider block uppercase">Tabungan Suami</span>
+       </div>
+      </div>
+      <button onclick="toggleDrawer(false)" class="w-8 h-8 rounded-full bg-slate-800/80 text-slate-400 hover:text-white flex items-center justify-center transition">
+<i class="fa-solid fa-xmark"></i>
+</button>
+     </div>
+     <div class="flex items-center space-x-3 mt-3">
+      <div id="drawerAvatar" class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500/20 to-amber-500/20 border border-orange-500/40 flex items-center justify-center font-bold text-orange-400 text-lg">
+       --
+      </div>
+      <div>
+       <h3 id="drawerName" class="font-bold text-sm text-white">-</h3>
+       <p id="drawerId" class="text-[11px] text-orange-400 font-medium">-</p>
+      </div>
+     </div>
+    </div>
+    <nav class="p-4 space-y-1.5">
+     <button onclick="toggleDrawer(false); switchTab('beranda')" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-300 hover:bg-slate-900 hover:text-orange-400 transition text-left">
+<i class="fa-solid fa-house w-5 text-center text-orange-400"></i>
+<span class="text-xs font-semibold">Beranda & Saldo</span>
+</button>
+     <button onclick="toggleDrawer(false); openModal('transferModal')" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-300 hover:bg-slate-900 hover:text-orange-400 transition text-left">
+<i class="fa-solid fa-paper-plane w-5 text-center text-amber-400"></i>
+<span class="text-xs font-semibold">Transfer Dana</span>
+</button>
+     <button onclick="toggleDrawer(false); switchTab('riwayat')" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-300 hover:bg-slate-900 hover:text-orange-400 transition text-left">
+<i class="fa-solid fa-receipt w-5 text-center text-orange-300"></i>
+<span class="text-xs font-semibold">Riwayat Transaksi</span>
+</button>
+    </nav>
+   </div>
+   <div class="p-4 border-t border-slate-800/80">
+    <button onclick="handleLogout()" class="w-full flex items-center justify-center space-x-2 py-3 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-400 hover:bg-rose-500 hover:text-white transition text-xs font-bold active:scale-95">
+<i class="fa-solid fa-right-from-bracket"></i>
+<span>Keluar (Logout)</span>
+</button>
+   </div>
+  </aside>
+  <!-- HEADER & SALDO -->
+  <header class="p-5 pt-6 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-900">
+   <div class="flex justify-between items-center mb-5">
+    <div class="flex items-center space-x-3">
+     <button onclick="toggleDrawer(true)" aria-label="Buka Menu" class="w-10 h-10 rounded-2xl bg-slate-800/90 border border-slate-700/80 flex items-center justify-center text-slate-200 hover:border-orange-500/50 hover:text-orange-400 transition active:scale-95">
+<i class="fa-solid fa-bars-staggered text-base"></i>
+</button>
+     <div class="flex items-center space-x-2.5">
+      <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white font-extrabold text-sm tracking-tighter shadow-md shadow-orange-500/30">
+       69
+      </div>
+      <div>
+       <div class="flex items-center space-x-1.5">
+        <span id="syncDot" class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+        <span class="text-[10px] text-orange-400 font-bold uppercase tracking-wider">BINI SYARIAH</span>
+       </div>
+       <h1 id="headerNasabahName" class="text-xs font-bold text-white tracking-tight">Memuat...</h1>
+      </div>
+     </div>
+    </div>
+    <div class="flex items-center space-x-2">
+     <button onclick="fetchNasabahData()" title="Refresh Data" class="w-9 h-9 rounded-2xl bg-slate-800/80 border border-slate-700/70 flex items-center justify-center text-slate-300 hover:text-orange-400 transition">
+<i class="fa-solid fa-arrows-rotate text-xs"></i>
+</button>
+     <button onclick="openModal('transferModal')" title="Transfer" class="w-9 h-9 rounded-2xl bg-orange-500/20 border border-orange-500/40 flex items-center justify-center text-orange-400 hover:bg-orange-500 hover:text-slate-950 transition">
+<i class="fa-solid fa-paper-plane text-xs"></i>
+</button>
+    </div>
+   </div>
+   <!-- Kartu Saldo Rekening -->
+   <div class="nasabah-mesh p-5 rounded-3xl border border-orange-500/30 shadow-2xl relative overflow-hidden animate-card">
+    <div class="flex justify-between items-center mb-4">
+     <div class="flex items-center space-x-2">
+      <span class="px-2.5 py-1 rounded-lg bg-slate-950/70 border border-orange-500/30 text-[10px] font-bold tracking-wider text-orange-300 uppercase">
+Tabungan Suami Kesayangan Mamah
+</span>
+      <span class="bg-orange-500/20 text-orange-300 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-orange-500/30">
+Syariah
+</span>
+     </div>
+     <i class="fa-solid fa-wifi rotate-90 text-orange-400/70 text-sm"></i>
+    </div>
+    <div class="mb-4">
+     <div class="flex items-center space-x-2">
+      <span class="text-xs text-slate-300 font-medium">Saldo Efektif</span>
+      <button onclick="toggleBalanceVisibility()" class="text-slate-300 hover:text-white transition p-1">
+<i id="eyeIcon" class="fa-solid fa-eye text-xs"></i>
+</button>
+     </div>
+     <h2 id="mainBalanceDisplay" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mt-1">
+      Rp 0
+     </h2>
+    </div>
+    <div class="pt-3.5 border-t border-white/10 flex justify-between items-center text-xs">
+     <div class="flex items-center space-x-2 bg-slate-950/50 px-3 py-1.5 rounded-xl border border-white/10">
+      <span class="text-slate-400 text-[11px]">No. Rek:</span>
+      <strong id="accountNumberText" class="text-slate-100 font-mono tracking-wider text-xs">-</strong>
+     </div>
+     <span id="nasabahIdBadge" class="text-[10px] font-mono text-orange-300 font-bold bg-orange-400/10 px-2 py-1 rounded-lg">-</span>
+    </div>
+   </div>
+  </header>
+  <!-- KONTEN UTAMA -->
+  <main class="px-5 flex-1 space-y-5 py-4">
+   <!-- TAB 1: BERANDA -->
+   <section id="tab-beranda" class="space-y-4 animate-card">
+    <div>
+     <div class="flex justify-between items-center mb-2">
+      <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Informasi & Promo Terbaru</h3>
+      <span class="w-2 h-2 rounded-full bg-orange-400 animate-ping"></span>
+     </div>
+     <div id="largeBroadcastCarousel" class="relative rounded-3xl overflow-hidden border border-orange-500/30 shadow-2xl bg-slate-950 min-h-[150px] flex flex-col justify-between">
+      <div class="p-6 text-center text-xs text-slate-500">Memuat informasi broadcast dari server...</div>
+     </div>
+    </div>
+    <div class="pt-2">
+     <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Menu Layanan Suami</h3>
+     <div class="grid grid-cols-2 gap-3">
+      <button onclick="openModal('transferModal')" class="flex items-center space-x-3 p-4 rounded-2xl bg-slate-800/40 border border-slate-800 hover:border-orange-500/50 hover:bg-slate-800/80 transition active:scale-95 text-left">
+<div class="w-12 h-12 bg-orange-500/15 text-orange-400 rounded-2xl flex items-center justify-center text-lg shrink-0">
+<i class="fa-solid fa-paper-plane"></i>
+</div>
+<div>
+<h4 class="text-xs font-bold text-white">Transfer</h4>
+<p class="text-[10px] text-slate-400 mt-0.5">Antar Rekening</p>
+</div>
+</button>
+      <button onclick="switchTab('riwayat')" class="flex items-center space-x-3 p-4 rounded-2xl bg-slate-800/40 border border-slate-800 hover:border-amber-500/50 hover:bg-slate-800/80 transition active:scale-95 text-left">
+<div class="w-12 h-12 bg-amber-500/15 text-amber-400 rounded-2xl flex items-center justify-center text-lg shrink-0">
+<i class="fa-solid fa-receipt"></i>
+</div>
+<div>
+<h4 class="text-xs font-bold text-white">Mutasi</h4>
+<p class="text-[10px] text-slate-400 mt-0.5">Riwayat Mutasi</p>
+</div>
+</button>
+     </div>
+    </div>
+    <div class="pt-2">
+     <div class="flex justify-between items-center mb-3">
+      <h3 class="font-bold text-sm text-white">Mutasi Rekening Terakhir</h3>
+      <button onclick="switchTab('riwayat')" class="text-xs text-orange-400 font-semibold hover:underline">Lihat Semua</button>
+     </div>
+     <div id="recentTransactionsList" class="space-y-2">
+      <p class="text-[11px] text-slate-500 text-center py-2">Memuat data mutasi...</p>
+     </div>
+    </div>
+   </section>
+   <!-- TAB 2: RIWAYAT -->
+   <section id="tab-riwayat" class="hidden space-y-4 animate-card">
+    <div class="flex justify-between items-center">
+     <div>
+      <h3 class="text-sm font-bold text-white">Riwayat Transaksi Rekening</h3>
+      <p class="text-[11px] text-slate-400">Semua aktivitas masuk dan keluar</p>
+     </div>
+     <span class="text-[11px] font-mono text-orange-400 font-bold bg-slate-800 px-2.5 py-1 rounded-xl border border-slate-700" id="txCountBadge">0 Transaksi</span>
+    </div>
+    <div id="fullHistoryList" class="space-y-2.5"></div>
+   </section>
+  </main>
+  <!-- BOTTOM NAVIGATION -->
+  <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-slate-950/95 backdrop-blur-md border-t border-slate-800/90 py-2.5 px-6 flex justify-around items-center z-30">
+   <button onclick="switchTab('beranda')" id="nav-beranda" class="flex flex-col items-center text-orange-400 transition">
+<i class="fa-solid fa-house text-base"></i>
+<span class="text-[10px] mt-1 font-semibold">Beranda</span>
+</button>
+   <button onclick="openModal('transferModal')" class="flex flex-col items-center text-slate-400 hover:text-orange-400 transition">
+<i class="fa-solid fa-paper-plane text-base"></i>
+<span class="text-[10px] mt-1 font-semibold">Transfer</span>
+</button>
+   <button onclick="switchTab('riwayat')" id="nav-riwayat" class="flex flex-col items-center text-slate-400 hover:text-orange-400 transition">
+<i class="fa-solid fa-receipt text-base"></i>
+<span class="text-[10px] mt-1 font-semibold">Mutasi</span>
+</button>
+  </nav>
+ </div>
+ <!-- MODAL TRANSFER -->
+ <div id="transferModal" class="fixed inset-0 bg-black/80 backdrop-blur-xs z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+  <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
+   <div class="flex justify-between items-center mb-5">
+    <div class="flex items-center space-x-2.5">
+     <div class="w-9 h-9 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center">
+      <i class="fa-solid fa-paper-plane"></i>
+     </div>
+     <h3 class="font-bold text-base text-white">Transfer Antar Rekening</h3>
+    </div>
+    <button onclick="closeModal('transferModal')" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
+<i class="fa-solid fa-xmark"></i>
+</button>
+   </div>
+   <form onsubmit="handleTransferSubmit(event)" class="space-y-4">
+    <div>
+     <label class="block text-xs font-semibold text-slate-300 mb-1.5">ID / No. Rekening Tujuan</label>
+     <div class="flex gap-2">
+      <div class="flex-1 flex items-center bg-slate-950 border border-slate-700 focus-within:border-orange-500 rounded-xl overflow-hidden">
+       <span class="pl-3.5 pr-1 py-2.5 text-xs font-mono font-extrabold text-orange-400 select-none">NSB-</span>
+       <input type="text" id="tfTargetId" oninput="lookupTargetNasabah(this.value)" required maxlength="5" inputmode="numeric" placeholder="002" class="w-full bg-transparent pr-3.5 py-2.5 text-xs font-mono uppercase text-white focus:outline-none">
+      </div>
+      <button type="button" onclick="openScannerCameraNasabah()" class="px-3.5 py-2.5 rounded-xl bg-orange-500/20 border border-orange-500/40 text-orange-400 hover:bg-orange-500 hover:text-slate-950 font-bold text-xs transition flex items-center gap-1.5 shrink-0">
+<i class="fa-solid fa-qrcode"></i>
+<span>Scan</span>
+</button>
+     </div>
+     <p id="targetLookupName" class="text-[11px] text-slate-400 mt-1.5 font-medium">Ketik ID tujuan untuk melihat nama penerima</p>
+    </div>
+    <div>
+     <label class="block text-xs font-semibold text-slate-300 mb-1.5">Nominal Transfer (Rp)</label>
+     <input type="number" id="tfAmount" required min="1000" step="500" placeholder="Masukkan nominal" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-3 text-base font-extrabold text-orange-400 focus:outline-none focus:border-orange-500">
+     <div class="flex gap-2 mt-2">
+      <button type="button" onclick="document.getElementById('tfAmount').value=50000" class="px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] text-slate-300 hover:bg-slate-700">50rb</button>
+      <button type="button" onclick="document.getElementById('tfAmount').value=100000" class="px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] text-slate-300 hover:bg-slate-700">100rb</button>
+      <button type="button" onclick="document.getElementById('tfAmount').value=250000" class="px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] text-slate-300 hover:bg-slate-700">250rb</button>
+      <button type="button" onclick="document.getElementById('tfAmount').value=500000" class="px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] text-slate-300 hover:bg-slate-700">500rb</button>
+     </div>
+    </div>
+    <div>
+     <label class="block text-xs font-semibold text-slate-300 mb-1.5">Catatan Transfer (Opsional)</label>
+     <input type="text" id="tfNote" placeholder="Contoh: Setoran uang belanja" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-orange-500">
+    </div>
+    <div>
+     <label class="block text-xs font-semibold text-slate-300 mb-1.5">PIN Transaksi (6 Digit)</label>
+     <input type="password" id="tfPin" required maxlength="6" inputmode="numeric" placeholder="••••••" class="w-full tracking-[0.6em] text-center font-bold bg-slate-950 border border-slate-700 focus:border-orange-500 rounded-xl py-3 text-white focus:outline-none">
+    </div>
+    <button type="submit" id="submitTfBtn" class="w-full py-3.5 rounded-2xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs shadow-lg shadow-orange-600/30 transition">
+Kirim Transfer Sekarang
+</button>
+   </form>
+  </div>
+ </div>
+ <!-- MODAL SCANNER KAMERA FULL NASABAH -->
+ <div id="scannerModal" class="fixed inset-0 bg-black/85 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-slate-900 border border-slate-700 w-full max-w-sm rounded-3xl p-6 text-center space-y-4 shadow-2xl">
+   <div class="flex justify-between items-center">
+    <h3 class="font-bold text-sm text-white">Scan QR Tujuan Transfer</h3>
+    <button onclick="closeScannerCameraNasabah()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
+<i class="fa-solid fa-xmark"></i>
+</button>
+   </div>
+   <div class="relative bg-slate-950 border border-slate-800 rounded-2xl h-72 flex flex-col items-center justify-center overflow-hidden">
+    <div id="readerNasabah" class="w-full h-full"></div>
+   </div>
+   <span class="text-[10px] text-slate-400">Arahkan kamera ke QR Code Rekening Tujuan</span>
+  </div>
+ </div>
+ <!-- MODAL STRUK -->
+ <div id="receiptModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+  <div class="bg-slate-900 border border-slate-700 w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-4 animate-card">
+   <div class="text-center border-b border-dashed border-slate-700 pb-3 mb-2">
+    <div class="w-12 h-12 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center mx-auto mb-2 text-xl">
+     <i class="fa-solid fa-check"></i>
+    </div>
+    <span class="text-[10px] font-bold uppercase tracking-widest text-orange-400">TRANSFER BERHASIL</span>
+    <h3 id="rcpAmount" class="text-2xl font-extrabold text-white mt-1">Rp 0</h3>
+    <p id="rcpDate" class="text-[11px] text-slate-400 mt-0.5">-</p>
+   </div>
+   <div class="space-y-2 text-xs">
+    <div class="flex justify-between"><span class="text-slate-400">No. Referensi</span><span id="rcpRef" class="font-mono text-slate-200">-</span></div>
+    <div class="flex justify-between"><span class="text-slate-400">Tujuan</span><span id="rcpTargetName" class="font-bold text-white">-</span></div>
+    <div class="flex justify-between"><span class="text-slate-400">Catatan</span><span id="rcpNote" class="text-slate-300">-</span></div>
+    <div class="flex justify-between"><span class="text-slate-400">Sisa Saldo</span><span id="rcpFinalBalance" class="font-bold text-orange-400">Rp 0</span></div>
+   </div>
+   <div class="pt-2 space-y-3 bg-slate-950/60 p-3.5 rounded-2xl border border-slate-800">
+    <p class="text-xs text-center font-semibold text-slate-300">Kirim struk PDF ke WhatsApp Penerima?</p>
+    <div class="grid grid-cols-2 gap-2.5">
+     <button onclick="confirmSendWhatsApp(false)" class="py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold hover:bg-slate-700 transition">
+Tidak
+</button>
+     <button onclick="confirmSendWhatsApp(true)" class="py-2.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white text-xs font-extrabold transition flex items-center justify-center gap-1.5 shadow-lg shadow-orange-600/30">
+<i class="fa-brands fa-whatsapp text-sm"></i>
+<span>Ya, Kirim</span>
+</button>
+    </div>
+   </div>
+  </div>
+ </div>
+ <div id="toastContainer" class="fixed top-5 left-1/2 -translate-x-1/2 z-[70] w-[90%] max-w-sm pointer-events-none space-y-2"></div>
+</body>
+
+<style>body { font-family: 'Inter', sans-serif; background-color: #020617; }
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
@@ -28,328 +320,55 @@
                 radial-gradient(at 15% 85%, rgba(234, 88, 12, 0.22) 0px, transparent 55%),
                 linear-gradient(135deg, #0f172a 0%, #29150b 50%, #431407 100%);
         }
-    </style>
-</head>
-<body class="bg-slate-950 text-slate-100 antialiased selection:bg-orange-500 selection:text-white">
 
-    <div class="max-w-md mx-auto min-h-screen bg-slate-900 shadow-2xl shadow-black/80 flex flex-col justify-between relative overflow-x-hidden border-x border-slate-800/80 pb-24">
+        #readerNasabah {
+            width: 100% !important;
+            height: 100% !important;
+            border: none !important;
+        }
+        #readerNasabah video {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover !important;
+            border-radius: 1rem;
+        }
+        #readerNasabah__dashboard_section_csr { display: none !important; }</style>
 
-        <div id="drawerBackdrop" onclick="toggleDrawer(false)" class="fixed inset-0 bg-black/75 backdrop-blur-xs z-40 hidden transition-opacity duration-300 opacity-0"></div>
+<!-- FIREBASE WEB SDK (MODULAR) -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
+    import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-messaging.js";
 
-        <!-- HAMBURGER MENU DRAWER NASABAH -->
-        <aside id="navDrawer" class="fixed top-0 left-0 bottom-0 w-72 max-w-[82vw] bg-slate-950 border-r border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 ease-out flex flex-col justify-between">
-            <div>
-                <div class="p-6 bg-gradient-to-br from-slate-900 to-orange-950/60 border-b border-slate-800">
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center space-x-2.5">
-                            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white font-extrabold text-base tracking-tighter shadow-lg shadow-orange-500/30 border border-orange-400/40">
-                                69
-                            </div>
-                            <div>
-                                <span class="font-extrabold tracking-tight text-sm text-white block leading-tight">BINI <span class="text-orange-400">SYARIAH</span></span>
-                                <span class="text-[9px] text-orange-300 font-semibold tracking-wider block uppercase">Tabungan Suami</span>
-                            </div>
-                        </div>
-                        <button onclick="toggleDrawer(false)" class="w-8 h-8 rounded-full bg-slate-800/80 text-slate-400 hover:text-white flex items-center justify-center transition">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
-                    </div>
-                    <div class="flex items-center space-x-3 mt-3">
-                        <div id="drawerAvatar" class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500/20 to-amber-500/20 border border-orange-500/40 flex items-center justify-center font-bold text-orange-400 text-lg">
-                            --
-                        </div>
-                        <div>
-                            <h3 id="drawerName" class="font-bold text-sm text-white">-</h3>
-                            <p id="drawerId" class="text-[11px] text-orange-400 font-medium">-</p>
-                        </div>
-                    </div>
-                </div>
+    const firebaseConfig = {
+      apiKey: "AIzaSyC7G04Z82kDG7DuNMCH0oNcGiRFOus1U1A",
+      authDomain: "bini-syariah-admin.firebaseapp.com",
+      projectId: "bini-syariah-admin",
+      storageBucket: "bini-syariah-admin.firebasestorage.app",
+      messagingSenderId: "515967831505",
+      appId: "1:515967831505:web:44b54a0f2f1f4d26a6e4f0"
+    };
 
-                <nav class="p-4 space-y-1.5">
-                    <button onclick="toggleDrawer(false); switchTab('beranda')" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-300 hover:bg-slate-900 hover:text-orange-400 transition text-left">
-                        <i class="fa-solid fa-house w-5 text-center text-orange-400"></i>
-                        <span class="text-xs font-semibold">Beranda & Saldo</span>
-                    </button>
-                    <button onclick="toggleDrawer(false); openModal('transferModal')" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-300 hover:bg-slate-900 hover:text-orange-400 transition text-left">
-                        <i class="fa-solid fa-paper-plane w-5 text-center text-amber-400"></i>
-                        <span class="text-xs font-semibold">Transfer Dana</span>
-                    </button>
-                    <button onclick="toggleDrawer(false); switchTab('riwayat')" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-300 hover:bg-slate-900 hover:text-orange-400 transition text-left">
-                        <i class="fa-solid fa-receipt w-5 text-center text-orange-300"></i>
-                        <span class="text-xs font-semibold">Riwayat Transaksi</span>
-                    </button>
-                </nav>
-            </div>
+    const app = initializeApp(firebaseConfig);
+    const messaging = getMessaging(app);
 
-            <div class="p-4 border-t border-slate-800/80">
-                <button onclick="handleLogout()" class="w-full flex items-center justify-center space-x-2 py-3 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-400 hover:bg-rose-500 hover:text-white transition text-xs font-bold active:scale-95">
-                    <i class="fa-solid fa-right-from-bracket"></i>
-                    <span>Keluar (Logout)</span>
-                </button>
-            </div>
-        </aside>
+    window.initFirebaseWebToken = async function(nasabahId) {
+        try {
+            const permission = await Notification.requestPermission();
+            if (permission === 'granted') {
+                const currentToken = await getToken(messaging, { 
+                    vapidKey: "BDFw0DN5sRHyKsXnbOJv4BKHIjQ3lw4KsdTa-p5bR1D24i2OvzCB6j540q6ePq8M_GGsph8PIiGEqxMWnGco2oI" 
+                });
+                if (currentToken) {
+                    registerDeviceFcmToken(currentToken, nasabahId);
+                }
+            }
+        } catch (err) {
+            console.error("Gagal mendapatkan FCM Token Web:", err);
+        }
+    };
+</script>
 
-        <!-- HEADER & SALDO UTAMA -->
-        <header class="p-5 pt-6 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-900">
-            <div class="flex justify-between items-center mb-5">
-                <div class="flex items-center space-x-3">
-                    <button onclick="toggleDrawer(true)" aria-label="Buka Menu" class="w-10 h-10 rounded-2xl bg-slate-800/90 border border-slate-700/80 flex items-center justify-center text-slate-200 hover:border-orange-500/50 hover:text-orange-400 transition active:scale-95">
-                        <i class="fa-solid fa-bars-staggered text-base"></i>
-                    </button>
-                    <div class="flex items-center space-x-2.5">
-                        <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white font-extrabold text-sm tracking-tighter shadow-md shadow-orange-500/30">
-                            69
-                        </div>
-                        <div>
-                            <div class="flex items-center space-x-1.5">
-                                <span id="syncDot" class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-                                <span class="text-[10px] text-orange-400 font-bold uppercase tracking-wider">BINI SYARIAH</span>
-                            </div>
-                            <h1 id="headerNasabahName" class="text-xs font-bold text-white tracking-tight">Memuat...</h1>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex items-center space-x-2">
-                    <button onclick="fetchNasabahData()" title="Refresh Data Sheet" class="w-9 h-9 rounded-2xl bg-slate-800/80 border border-slate-700/70 flex items-center justify-center text-slate-300 hover:text-orange-400 transition">
-                        <i class="fa-solid fa-arrows-rotate text-xs"></i>
-                    </button>
-                    <button onclick="openModal('transferModal')" title="Transfer" class="w-9 h-9 rounded-2xl bg-orange-500/20 border border-orange-500/40 flex items-center justify-center text-orange-400 hover:bg-orange-500 hover:text-slate-950 transition">
-                        <i class="fa-solid fa-paper-plane text-xs"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Kartu Saldo Rekening -->
-            <div class="nasabah-mesh p-5 rounded-3xl border border-orange-500/30 shadow-2xl relative overflow-hidden animate-card">
-                <div class="flex justify-between items-center mb-4">
-                    <div class="flex items-center space-x-2">
-                        <span class="px-2.5 py-1 rounded-lg bg-slate-950/70 border border-orange-500/30 text-[10px] font-bold tracking-wider text-orange-300 uppercase">
-                            Tabungan Suami Kesayangan Mamah
-                        </span>
-                        <span class="bg-orange-500/20 text-orange-300 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-orange-500/30">
-                            Syariah
-                        </span>
-                    </div>
-                    <i class="fa-solid fa-wifi rotate-90 text-orange-400/70 text-sm"></i>
-                </div>
-
-                <div class="mb-4">
-                    <div class="flex items-center space-x-2">
-                        <span class="text-xs text-slate-300 font-medium">Saldo Efektif</span>
-                        <button onclick="toggleBalanceVisibility()" class="text-slate-300 hover:text-white transition p-1">
-                            <i id="eyeIcon" class="fa-solid fa-eye text-xs"></i>
-                        </button>
-                    </div>
-                    <h2 id="mainBalanceDisplay" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mt-1">
-                        Rp 0
-                    </h2>
-                </div>
-
-                <div class="pt-3.5 border-t border-white/10 flex justify-between items-center text-xs">
-                    <div class="flex items-center space-x-2 bg-slate-950/50 px-3 py-1.5 rounded-xl border border-white/10">
-                        <span class="text-slate-400 text-[11px]">No. Rek:</span>
-                        <strong id="accountNumberText" class="text-slate-100 font-mono tracking-wider text-xs">-</strong>
-                    </div>
-                    <span id="nasabahIdBadge" class="text-[10px] font-mono text-orange-300 font-bold bg-orange-400/10 px-2 py-1 rounded-lg">-</span>
-                </div>
-            </div>
-        </header>
-
-        <!-- KONTEN UTAMA -->
-        <main class="px-5 flex-1 space-y-5 py-4">
-
-            <!-- TAB 1: BERANDA -->
-            <section id="tab-beranda" class="space-y-4 animate-card">
-                <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Informasi & Promo Terbaru</h3>
-                        <span class="w-2 h-2 rounded-full bg-orange-400 animate-ping"></span>
-                    </div>
-                    <div id="largeBroadcastCarousel" class="relative rounded-3xl overflow-hidden border border-orange-500/30 shadow-2xl bg-slate-950 min-h-[150px] flex flex-col justify-between">
-                        <div class="p-6 text-center text-xs text-slate-500">Memuat informasi broadcast dari server...</div>
-                    </div>
-                </div>
-
-                <div class="pt-2">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Menu Layanan Suami</h3>
-                    <div class="grid grid-cols-2 gap-3">
-                        <button onclick="openModal('transferModal')" class="flex items-center space-x-3 p-4 rounded-2xl bg-slate-800/40 border border-slate-800 hover:border-orange-500/50 hover:bg-slate-800/80 transition active:scale-95 text-left">
-                            <div class="w-12 h-12 bg-orange-500/15 text-orange-400 rounded-2xl flex items-center justify-center text-lg shrink-0">
-                                <i class="fa-solid fa-paper-plane"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-xs font-bold text-white">Transfer</h4>
-                                <p class="text-[10px] text-slate-400 mt-0.5">Antar Rekening</p>
-                            </div>
-                        </button>
-                        <button onclick="switchTab('riwayat')" class="flex items-center space-x-3 p-4 rounded-2xl bg-slate-800/40 border border-slate-800 hover:border-amber-500/50 hover:bg-slate-800/80 transition active:scale-95 text-left">
-                            <div class="w-12 h-12 bg-amber-500/15 text-amber-400 rounded-2xl flex items-center justify-center text-lg shrink-0">
-                                <i class="fa-solid fa-receipt"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-xs font-bold text-white">Mutasi</h4>
-                                <p class="text-[10px] text-slate-400 mt-0.5">Riwayat Mutasi</p>
-                            </div>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="pt-2">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="font-bold text-sm text-white">Mutasi Rekening Terakhir</h3>
-                        <button onclick="switchTab('riwayat')" class="text-xs text-orange-400 font-semibold hover:underline">Lihat Semua</button>
-                    </div>
-                    <div id="recentTransactionsList" class="space-y-2">
-                        <p class="text-[11px] text-slate-500 text-center py-2">Memuat data mutasi...</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- TAB 2: RIWAYAT TRANSAKSI LENGKAP -->
-            <section id="tab-riwayat" class="hidden space-y-4 animate-card">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h3 class="text-sm font-bold text-white">Riwayat Transaksi Rekening</h3>
-                        <p class="text-[11px] text-slate-400">Semua aktivitas masuk dan keluar</p>
-                    </div>
-                    <span class="text-[11px] font-mono text-orange-400 font-bold bg-slate-800 px-2.5 py-1 rounded-xl border border-slate-700" id="txCountBadge">0 Transaksi</span>
-                </div>
-
-                <div id="fullHistoryList" class="space-y-2.5"></div>
-            </section>
-
-        </main>
-
-        <!-- BOTTOM NAVIGATION BAR -->
-        <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-slate-950/95 backdrop-blur-md border-t border-slate-800/90 py-2.5 px-6 flex justify-around items-center z-30">
-            <button onclick="switchTab('beranda')" id="nav-beranda" class="flex flex-col items-center text-orange-400 transition">
-                <i class="fa-solid fa-house text-base"></i>
-                <span class="text-[10px] mt-1 font-semibold">Beranda</span>
-            </button>
-            <button onclick="openModal('transferModal')" class="flex flex-col items-center text-slate-400 hover:text-orange-400 transition">
-                <i class="fa-solid fa-paper-plane text-base"></i>
-                <span class="text-[10px] mt-1 font-semibold">Transfer</span>
-            </button>
-            <button onclick="switchTab('riwayat')" id="nav-riwayat" class="flex flex-col items-center text-slate-400 hover:text-orange-400 transition">
-                <i class="fa-solid fa-receipt text-base"></i>
-                <span class="text-[10px] mt-1 font-semibold">Mutasi</span>
-            </button>
-        </nav>
-
-    </div>
-
-    <!-- MODAL TRANSFER DANA -->
-    <div id="transferModal" class="fixed inset-0 bg-black/80 backdrop-blur-xs z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-5">
-                <div class="flex items-center space-x-2.5">
-                    <div class="w-9 h-9 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center">
-                        <i class="fa-solid fa-paper-plane"></i>
-                    </div>
-                    <h3 class="font-bold text-base text-white">Transfer Antar Rekening</h3>
-                </div>
-                <button onclick="closeModal('transferModal')" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <form onsubmit="handleTransferSubmit(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">ID / No. Rekening Tujuan</label>
-                    <div class="flex gap-2">
-                        <div class="flex-1 flex items-center bg-slate-950 border border-slate-700 focus-within:border-orange-500 rounded-xl overflow-hidden">
-                            <span class="pl-3.5 pr-1 py-2.5 text-xs font-mono font-extrabold text-orange-400 select-none">NSB-</span>
-                            <input type="text" id="tfTargetId" oninput="lookupTargetNasabah(this.value)" required maxlength="5" inputmode="numeric" placeholder="002" class="w-full bg-transparent pr-3.5 py-2.5 text-xs font-mono uppercase text-white focus:outline-none">
-                        </div>
-                        <button type="button" onclick="openScannerCameraNasabah()" class="px-3.5 py-2.5 rounded-xl bg-orange-500/20 border border-orange-500/40 text-orange-400 hover:bg-orange-500 hover:text-slate-950 font-bold text-xs transition flex items-center gap-1.5 shrink-0">
-                            <i class="fa-solid fa-qrcode"></i>
-                            <span>Scan</span>
-                        </button>
-                    </div>
-                    <p id="targetLookupName" class="text-[11px] text-slate-400 mt-1.5 font-medium">Ketik ID tujuan untuk melihat nama penerima</p>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Nominal Transfer (Rp)</label>
-                    <input type="number" id="tfAmount" required min="1000" step="500" placeholder="Masukkan nominal" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-3 text-base font-extrabold text-orange-400 focus:outline-none focus:border-orange-500">
-                    <div class="flex gap-2 mt-2">
-                        <button type="button" onclick="document.getElementById('tfAmount').value=50000" class="px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] text-slate-300 hover:bg-slate-700">50rb</button>
-                        <button type="button" onclick="document.getElementById('tfAmount').value=100000" class="px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] text-slate-300 hover:bg-slate-700">100rb</button>
-                        <button type="button" onclick="document.getElementById('tfAmount').value=250000" class="px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] text-slate-300 hover:bg-slate-700">250rb</button>
-                        <button type="button" onclick="document.getElementById('tfAmount').value=500000" class="px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] text-slate-300 hover:bg-slate-700">500rb</button>
-                    </div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">Catatan Transfer (Opsional)</label>
-                    <input type="text" id="tfNote" placeholder="Contoh: Setoran uang belanja dari suami" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-orange-500">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-semibold text-slate-300 mb-1.5">PIN Transaksi (6 Digit)</label>
-                    <input type="password" id="tfPin" required maxlength="6" inputmode="numeric" placeholder="••••••" class="w-full tracking-[0.6em] text-center font-bold bg-slate-950 border border-slate-700 focus:border-orange-500 rounded-xl py-3 text-white focus:outline-none">
-                </div>
-
-                <button type="submit" id="submitTfBtn" class="w-full py-3.5 rounded-2xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs shadow-lg shadow-orange-600/30 transition">
-                    Kirim Transfer Sekarang
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- MODAL SCANNER KAMERA NASABAH -->
-    <div id="scannerModal" class="fixed inset-0 bg-black/85 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-700 w-full max-w-sm rounded-3xl p-6 text-center space-y-4 shadow-2xl">
-            <div class="flex justify-between items-center">
-                <h3 class="font-bold text-sm text-white">Scan QR Tujuan Transfer</h3>
-                <button onclick="closeScannerCameraNasabah()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <div class="relative bg-slate-950 border border-slate-800 rounded-2xl h-64 flex flex-col items-center justify-center overflow-hidden">
-                <div id="readerNasabah" class="w-full h-full"></div>
-            </div>
-            <span class="text-[10px] text-slate-400">Arahkan kamera ke QR Code Rekening Tujuan</span>
-        </div>
-    </div>
-
-    <!-- MODAL STRUK DIGITAL -->
-    <div id="receiptModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-700 w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-4 animate-card">
-            <div class="text-center border-b border-dashed border-slate-700 pb-3 mb-2">
-                <div class="w-12 h-12 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center mx-auto mb-2 text-xl">
-                    <i class="fa-solid fa-check"></i>
-                </div>
-                <span class="text-[10px] font-bold uppercase tracking-widest text-orange-400">TRANSFER BERHASIL</span>
-                <h3 id="rcpAmount" class="text-2xl font-extrabold text-white mt-1">Rp 0</h3>
-                <p id="rcpDate" class="text-[11px] text-slate-400 mt-0.5">-</p>
-            </div>
-            <div class="space-y-2 text-xs">
-                <div class="flex justify-between"><span class="text-slate-400">No. Referensi</span><span id="rcpRef" class="font-mono text-slate-200">-</span></div>
-                <div class="flex justify-between"><span class="text-slate-400">Tujuan</span><span id="rcpTargetName" class="font-bold text-white">-</span></div>
-                <div class="flex justify-between"><span class="text-slate-400">Catatan</span><span id="rcpNote" class="text-slate-300">-</span></div>
-                <div class="flex justify-between"><span class="text-slate-400">Sisa Saldo</span><span id="rcpFinalBalance" class="font-bold text-orange-400">Rp 0</span></div>
-            </div>
-
-            <div class="pt-2 space-y-3 bg-slate-950/60 p-3.5 rounded-2xl border border-slate-800">
-                <p class="text-xs text-center font-semibold text-slate-300">Kirim struk PDF ke WhatsApp Penerima?</p>
-                <div class="grid grid-cols-2 gap-2.5">
-                    <button onclick="confirmSendWhatsApp(false)" class="py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold hover:bg-slate-700 transition">
-                        Tidak
-                    </button>
-                    <button onclick="confirmSendWhatsApp(true)" class="py-2.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white text-xs font-extrabold transition flex items-center justify-center gap-1.5 shadow-lg shadow-orange-600/30">
-                        <i class="fa-brands fa-whatsapp text-sm"></i>
-                        <span>Ya, Kirim</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="toastContainer" class="fixed top-5 left-1/2 -translate-x-1/2 z-[70] w-[90%] max-w-sm pointer-events-none space-y-2"></div>
-
-    <script>
+<script>
         const sessionNasabahId = sessionStorage.getItem('nusa_nasabah_session');
         if (!sessionNasabahId) {
             window.location.href = 'login-nasabah.html';
@@ -365,6 +384,30 @@
         let isBalanceHidden = false;
         let pendingReceiptData = null;
         let html5QrCodeNasabah = null;
+
+        async function registerDeviceFcmToken(token, overrideId = null) {
+            const targetId = overrideId || sessionNasabahId;
+            if (!token || !targetId) return;
+            if (localStorage.getItem('saved_fcm_token_' + targetId) === token) return;
+
+            try {
+                const res = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'saveFcmToken',
+                        nasabahId: targetId,
+                        token: token
+                    })
+                });
+                const result = await res.json();
+                if (result.status === 'success') {
+                    localStorage.setItem('saved_fcm_token_' + targetId, token);
+                    console.log('FCM Token berhasil disinkronkan ke Google Sheets');
+                }
+            } catch (err) {
+                console.error('Gagal menyimpan FCM Token:', err);
+            }
+        }
 
         function formatRupiah(num) {
             return 'Rp ' + Number(num || 0).toLocaleString('id-ID');
@@ -439,7 +482,6 @@
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
-        // FUNGSI KAMERA QR NASABAH
         function openScannerCameraNasabah() {
             openModal('scannerModal');
             if (!html5QrCodeNasabah) {
@@ -447,10 +489,8 @@
             }
             html5QrCodeNasabah.start(
                 { facingMode: "environment" }, 
-                { fps: 10, qrbox: { width: 200, height: 200 } },
-                (decodedText) => {
-                    handleSuccessfulScanNasabah(decodedText);
-                },
+                { fps: 10, qrbox: { width: 240, height: 240 } },
+                (decodedText) => { handleSuccessfulScanNasabah(decodedText); },
                 (errorMessage) => {}
             ).catch(err => {
                 showToast("Akses kamera gagal.", "error");
@@ -466,19 +506,7 @@
         }
 
         function handleSuccessfulScanNasabah(scannedText) {
-            if (html5QrCodeNasabah && html5QrCodeNasabah.isScanning) {
-                html5QrCodeNasabah.stop().then(() => {
-                    closeModal('scannerModal');
-                    processScannedResultNasabah(scannedText);
-                });
-            } else {
-                closeModal('scannerModal');
-                processScannedResultNasabah(scannedText);
-            }
-        }
-
-        function processScannedResultNasabah(text) {
-            let cleanId = text.trim();
+            let cleanId = scannedText.trim();
             if (cleanId.includes('NSB-')) cleanId = cleanId.split('NSB-')[1];
             document.getElementById('tfTargetId').value = cleanId;
             lookupTargetNasabah(cleanId);
@@ -580,6 +608,11 @@
                         applyNasabahToUI();
                         renderLargeBroadcastCarousel();
                         syncDot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400';
+
+                        // Panggil otomatis pengambilan token web firebase setelah data nasabah siap
+                        if (typeof window.initFirebaseWebToken === 'function') {
+                            window.initFirebaseWebToken(currentNasabah.id);
+                        }
                     } else {
                         showToast('Akun tidak ditemukan di database.', 'error');
                         sessionStorage.removeItem('nusa_nasabah_session');
@@ -868,6 +901,4 @@
                 }
             }, 5000);
         });
-    </script>
-</body>
-</html>
+</script></html>
