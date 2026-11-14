@@ -5,6 +5,14 @@
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
  <title>Login - BINI SYARIAH (Tabungan Suami Kesayangan Mamah)</title>
+
+ <!-- KONFIGURASI PWA & MANIFEST -->
+ <link rel="manifest" href="./manifest.json">
+ <meta name="theme-color" content="#020617">
+ <meta name="apple-mobile-web-app-capable" content="yes">
+ <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+ <link rel="apple-touch-icon" href="./icon-192.png">
+
  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -88,7 +96,21 @@ iframe#netlify-badge-iframe {
     opacity: 0 !important;
     pointer-events: none !important;
 }
-</style><script>// URL WEB APP GOOGLE APPS SCRIPT (HARUS SAMA PERSIS DENGAN ADMIN.HTML & NASABAH.HTML)
+</style>
+
+<!-- REGISTRASI SERVICE WORKER UNTUK PWA -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then((reg) => console.log('Service Worker index berhasil didaftarkan:', reg.scope))
+        .catch((err) => console.log('Service Worker index gagal didaftarkan:', err));
+    });
+  }
+</script>
+
+<script>
+        // URL WEB APP GOOGLE APPS SCRIPT (HARUS SAMA PERSIS DENGAN ADMIN.HTML & NASABAH.HTML)
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwu0kGhiGxqD1wH5MeqWxIDMfep_SsTLYkpYMnjwzGJNu2kUPAW8T83SL2C1t52CH9r/exec";
 
         function normalizeCustomerId(rawInput) {
@@ -232,4 +254,5 @@ iframe#netlify-badge-iframe {
                 status.textContent = "Gagal terhubung ke Google Sheets.";
                 btn.disabled = false;
             }
-        }</script></html>
+        }
+</script></html>
