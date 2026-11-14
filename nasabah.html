@@ -10,6 +10,8 @@
  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+ <!-- LIBRARY QR CODE GENERATOR -->
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 
 <body class="bg-slate-950 text-slate-100 antialiased selection:bg-orange-500 selection:text-white">
@@ -52,6 +54,10 @@
 <i class="fa-solid fa-paper-plane w-5 text-center text-amber-400"></i>
 <span class="text-xs font-semibold">Transfer Dana</span>
 </button>
+     <button onclick="toggleDrawer(false); openMyQrCode()" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-300 hover:bg-slate-900 hover:text-orange-400 transition text-left">
+<i class="fa-solid fa-qrcode w-5 text-center text-orange-400"></i>
+<span class="text-xs font-semibold">QR Code Saya</span>
+</button>
      <button onclick="toggleDrawer(false); switchTab('riwayat')" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-300 hover:bg-slate-900 hover:text-orange-400 transition text-left">
 <i class="fa-solid fa-receipt w-5 text-center text-orange-300"></i>
 <span class="text-xs font-semibold">Riwayat Transaksi</span>
@@ -89,8 +95,8 @@
      <button onclick="fetchNasabahData()" title="Refresh Data" class="w-9 h-9 rounded-2xl bg-slate-800/80 border border-slate-700/70 flex items-center justify-center text-slate-300 hover:text-orange-400 transition">
 <i class="fa-solid fa-arrows-rotate text-xs"></i>
 </button>
-     <button onclick="openModal('transferModal')" title="Transfer" class="w-9 h-9 rounded-2xl bg-orange-500/20 border border-orange-500/40 flex items-center justify-center text-orange-400 hover:bg-orange-500 hover:text-slate-950 transition">
-<i class="fa-solid fa-paper-plane text-xs"></i>
+     <button onclick="openMyQrCode()" title="QR Code Saya" class="w-9 h-9 rounded-2xl bg-orange-500/20 border border-orange-500/40 flex items-center justify-center text-orange-400 hover:bg-orange-500 hover:text-slate-950 transition">
+<i class="fa-solid fa-qrcode text-xs"></i>
 </button>
     </div>
    </div>
@@ -101,11 +107,10 @@
       <span class="px-2.5 py-1 rounded-lg bg-slate-950/70 border border-orange-500/30 text-[10px] font-bold tracking-wider text-orange-300 uppercase">
 Tabungan Suami Kesayangan Mamah
 </span>
-      <span class="bg-orange-500/20 text-orange-300 text-[10px] font-semibold px-2 py-0.5 rounded-full border border-orange-500/30">
-Syariah
-</span>
      </div>
-     <i class="fa-solid fa-wifi rotate-90 text-orange-400/70 text-sm"></i>
+     <button onclick="openMyQrCode()" class="px-2.5 py-1 rounded-xl bg-orange-500/20 text-orange-400 hover:bg-orange-500 hover:text-slate-950 font-bold text-[10px] transition flex items-center gap-1 border border-orange-500/30">
+      <i class="fa-solid fa-qrcode"></i> QR Saya
+     </button>
     </div>
     <div class="mb-4">
      <div class="flex items-center space-x-2">
@@ -152,13 +157,13 @@ Syariah
 <p class="text-[10px] text-slate-400 mt-0.5">Antar Rekening</p>
 </div>
 </button>
-      <button onclick="switchTab('riwayat')" class="flex items-center space-x-3 p-4 rounded-2xl bg-slate-800/40 border border-slate-800 hover:border-amber-500/50 hover:bg-slate-800/80 transition active:scale-95 text-left">
+      <button onclick="openMyQrCode()" class="flex items-center space-x-3 p-4 rounded-2xl bg-slate-800/40 border border-slate-800 hover:border-amber-500/50 hover:bg-slate-800/80 transition active:scale-95 text-left">
 <div class="w-12 h-12 bg-amber-500/15 text-amber-400 rounded-2xl flex items-center justify-center text-lg shrink-0">
-<i class="fa-solid fa-receipt"></i>
+<i class="fa-solid fa-qrcode"></i>
 </div>
 <div>
-<h4 class="text-xs font-bold text-white">Mutasi</h4>
-<p class="text-[10px] text-slate-400 mt-0.5">Riwayat Mutasi</p>
+<h4 class="text-xs font-bold text-white">QR Saya</h4>
+<p class="text-[10px] text-slate-400 mt-0.5">Terima Setoran</p>
 </div>
 </button>
      </div>
@@ -195,12 +200,37 @@ Syariah
 <i class="fa-solid fa-paper-plane text-base"></i>
 <span class="text-[10px] mt-1 font-semibold">Transfer</span>
 </button>
+   <button onclick="openMyQrCode()" class="flex flex-col items-center text-slate-400 hover:text-orange-400 transition">
+<i class="fa-solid fa-qrcode text-base"></i>
+<span class="text-[10px] mt-1 font-semibold">QR Saya</span>
+</button>
    <button onclick="switchTab('riwayat')" id="nav-riwayat" class="flex flex-col items-center text-slate-400 hover:text-orange-400 transition">
 <i class="fa-solid fa-receipt text-base"></i>
 <span class="text-[10px] mt-1 font-semibold">Mutasi</span>
 </button>
   </nav>
  </div>
+
+ <!-- MODAL QR KODE SAYA -->
+ <div id="myQrModal" class="fixed inset-0 bg-black/85 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-slate-900 border border-slate-700 w-full max-w-sm rounded-3xl p-6 text-center space-y-4 shadow-2xl animate-card">
+   <div class="flex justify-between items-center">
+    <h3 class="font-bold text-sm text-white">QR Code Rekening Saya</h3>
+    <button onclick="closeModal('myQrModal')" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
+     <i class="fa-solid fa-xmark"></i>
+    </button>
+   </div>
+   <div class="bg-white p-4 rounded-2xl w-48 h-48 mx-auto flex items-center justify-center shadow-lg">
+    <div id="qrcodeContainer"></div>
+   </div>
+   <div>
+    <h4 id="qrModalName" class="font-bold text-sm text-white">-</h4>
+    <p id="qrModalId" class="text-xs font-mono text-orange-400 font-bold mt-0.5">-</p>
+   </div>
+   <span class="text-[10px] text-slate-400 block">Tunjukkan QR ini ke sesama warga atau teller untuk menerima transfer / setoran tunai.</span>
+  </div>
+ </div>
+
  <!-- MODAL TRANSFER -->
  <div id="transferModal" class="fixed inset-0 bg-black/80 backdrop-blur-xs z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
   <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
@@ -384,6 +414,27 @@ Tidak
         let isBalanceHidden = false;
         let pendingReceiptData = null;
         let html5QrCodeNasabah = null;
+        let qrCodeInstance = null;
+
+        function openMyQrCode() {
+            if (!currentNasabah) return;
+            openModal('myQrModal');
+            
+            document.getElementById('qrModalName').textContent = currentNasabah.name;
+            document.getElementById('qrModalId').textContent = `${currentNasabah.id} • ${currentNasabah.acc}`;
+            
+            const container = document.getElementById('qrcodeContainer');
+            container.innerHTML = '';
+            
+            qrCodeInstance = new QRCode(container, {
+                text: currentNasabah.id,
+                width: 160,
+                height: 160,
+                colorDark: "#020617",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
 
         async function registerDeviceFcmToken(token, overrideId = null) {
             const targetId = overrideId || sessionNasabahId;
@@ -465,7 +516,7 @@ Tidak
         function handleLogout() {
             sessionStorage.removeItem('nusa_nasabah_session');
             showToast('Keluar dari akun nasabah...', 'warning');
-            setTimeout(() => { window.location.href = 'login-nasabah.html'; }, 700);
+            setTimeout(() => { window.location.href = 'index.html'; }, 700);
         }
 
         function switchTab(tabName) {
@@ -510,6 +561,7 @@ Tidak
             if (cleanId.includes('NSB-')) cleanId = cleanId.split('NSB-')[1];
             document.getElementById('tfTargetId').value = cleanId;
             lookupTargetNasabah(cleanId);
+            closeScannerCameraNasabah();
             showToast(`QR Terbaca: NSB-${cleanId}`, 'success');
         }
 
@@ -609,14 +661,13 @@ Tidak
                         renderLargeBroadcastCarousel();
                         syncDot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400';
 
-                        // Panggil otomatis pengambilan token web firebase setelah data nasabah siap
                         if (typeof window.initFirebaseWebToken === 'function') {
                             window.initFirebaseWebToken(currentNasabah.id);
                         }
                     } else {
                         showToast('Akun tidak ditemukan di database.', 'error');
                         sessionStorage.removeItem('nusa_nasabah_session');
-                        setTimeout(() => window.location.href = 'login-nasabah.html', 1200);
+                        setTimeout(() => window.location.href = 'index.html', 1200);
                     }
                 }
             } catch (err) {
