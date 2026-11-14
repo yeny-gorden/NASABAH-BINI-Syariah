@@ -695,6 +695,33 @@ Tidak
             }
         }
 
+        // AUTO-SYNC SALDO & MUTASI SECARA REAL-TIME DI LATAR BELAKANG (TIAP 5 DETIK)
+        setInterval(async () => {
+            const transferModalHidden = document.getElementById('transferModal').classList.contains('hidden');
+            const scannerModalHidden = document.getElementById('scannerModal').classList.contains('hidden');
+            
+            if (sessionNasabahId && transferModalHidden && scannerModalHidden) {
+                try {
+                    const response = await fetch(`${SCRIPT_URL}?action=getAllData`);
+                    const result = await response.json();
+                    if (result.status === 'success') {
+                        const freshNasabahList = (result.nasabah || []).map(row => ({
+                            id: String(row.ID_Nasabah),
+                            name: String(row.Nama),
+                            balance: Number(row.Saldo || 0)
+                        }));
+                        const updated = freshNasabahList.find(n => n.id === sessionNasabahId);
+                        if (updated && currentNasabah && updated.balance !== currentNasabah.balance) {
+                            currentNasabah.balance = updated.balance;
+                            updateBalanceUI();
+                            showToast('Saldo rekening Anda telah diperbarui oleh Admin!', 'success');
+                            speakNotification('Saldo rekening Anda telah diperbarui');
+                        }
+                    }
+                } catch(e) {}
+            }
+        }, 5000);
+
         function applyNasabahToUI() {
             if (!currentNasabah) return;
             document.getElementById('headerNasabahName').textContent = currentNasabah.name;
