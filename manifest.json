@@ -1,11 +1,10 @@
 {
   "name": "BINI Syariah",
   "short_name": "BINI Syariah",
-  "description": "Tabungan Suami Kesayangan Mamah",
-  "start_url": "/index.html",
+  "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#020617",
-  "theme_color": "#ea580c",
+  "theme_color": "#020617",
   "icons": [
     {
       "src": "icon-192.png",
