@@ -5,25 +5,19 @@
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
  <title>BINI Syariah - Tabungan Suami Kesayangan Mamah</title>
+
+ <!-- KONFIGURASI PWA & MANIFEST -->
+ <link rel="manifest" href="./manifest.json">
+ <meta name="theme-color" content="#020617">
+ <meta name="apple-mobile-web-app-capable" content="yes">
+ <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+ <link rel="apple-touch-icon" href="./icon-192.png">
+
  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
- <link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#020617">
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then((reg) => console.log('ServiceWorker registered: ', reg))
-        .catch((err) => console.log('ServiceWorker error: ', err));
-    });
-  }
-</script>
-
-
- 
  <!-- LIBRARY QR CODE GENERATOR -->
  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
@@ -378,6 +372,17 @@ Tidak
         }
         #readerNasabah__dashboard_section_csr { display: none !important; }</style>
 
+<!-- REGISTRASI SERVICE WORKER UNTUK PWA -->
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then((reg) => console.log('Service Worker berhasil didaftarkan:', reg.scope))
+        .catch((err) => console.log('Service Worker gagal didaftarkan:', err));
+    });
+  }
+</script>
+
 <!-- FIREBASE WEB SDK (MODULAR) -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
@@ -415,7 +420,7 @@ Tidak
 <script>
         const sessionNasabahId = sessionStorage.getItem('nusa_nasabah_session');
         if (!sessionNasabahId) {
-            window.location.href = 'login-nasabah.html';
+            window.location.href = 'index.html';
         }
 
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwu0kGhiGxqD1wH5MeqWxIDMfep_SsTLYkpYMnjwzGJNu2kUPAW8T83SL2C1t52CH9r/exec";
