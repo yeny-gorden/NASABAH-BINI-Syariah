@@ -1,45 +1,23 @@
-const CACHE_NAME = 'bini-syariah-v1';
-const urlsToCache = [
-  './index.html',
-  './nasabah.html',
-  './manifest.json',
-  './icon-192.png',
-  './icon-512.png'
-];
+importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js');
 
-// Install Service Worker & Cache File Utama
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(urlsToCache);
-    })
-  );
-  self.skipWaiting();
+firebase.initializeApp({
+    apiKey: "AIzaSyAbsj8FdkvymawPqBBCsNVHjkN26b8MytU",
+    projectId: "bini-syariah-admin",
+    storageBucket: "bini-syariah-admin.firebasestorage.app",
+    messagingSenderId: "515967831505",
+    appId: "1:515967831505:android:bcf557b78333754fa6e4f0"
 });
 
-// Aktivasi & Bersihkan Cache Lama
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames.map((cacheName) => {
-          if (cacheName !== CACHE_NAME) {
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
-  );
-  self.clientsClaim();
-});
+const messaging = firebase.messaging();
 
-// Fetch Cache Request
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    }).catch(() => {
-      // Fallback jika offline total (opsional)
-    })
-  );
+messaging.onBackgroundMessage((payload) => {
+    const notificationTitle = payload.notification.title;
+    const notificationOptions = {
+        body: payload.notification.body,
+        icon: './icon-192.png',
+        sound: 'default'
+    };
+
+    self.registration.showNotification(notificationTitle, notificationOptions);
 });
