@@ -4,9 +4,8 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>BINI Syariah - Suami Cari,Istri Menikmati</title>
+ <title>BINI Syariah - Tabungan Suami Kesayangan Mamah</title>
 
- <!-- KONFIGURASI PWA & MANIFEST -->
  <link rel="manifest" href="./manifest.json">
  <meta name="theme-color" content="#020617">
  <meta name="apple-mobile-web-app-capable" content="yes">
@@ -18,35 +17,32 @@
  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
- <!-- LIBRARY QR CODE GENERATOR -->
  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+ <!-- FIREBASE SDK COMPAT (FCM) -->
+ <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
 </head>
 
 <body class="bg-slate-950 text-slate-100 antialiased selection:bg-orange-500 selection:text-white">
  <div class="max-w-md mx-auto min-h-screen bg-slate-900 shadow-2xl shadow-black/80 flex flex-col justify-between relative overflow-x-hidden border-x border-slate-800/80 pb-24">
   <div id="drawerBackdrop" onclick="toggleDrawer(false)" class="fixed inset-0 bg-black/75 backdrop-blur-xs z-40 hidden transition-opacity duration-300 opacity-0"></div>
-  <!-- HAMBURGER MENU DRAWER NASABAH -->
+  
   <aside id="navDrawer" class="fixed top-0 left-0 bottom-0 w-72 max-w-[82vw] bg-slate-950 border-r border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 ease-out flex flex-col justify-between">
    <div>
     <div class="p-6 bg-gradient-to-br from-slate-900 to-orange-950/60 border-b border-slate-800">
      <div class="flex items-center justify-between mb-4">
       <div class="flex items-center space-x-2.5">
-       <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white font-extrabold text-base tracking-tighter shadow-lg shadow-orange-500/30 border border-orange-400/40">
-        69
-       </div>
+       <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white font-extrabold text-base tracking-tighter shadow-lg shadow-orange-500/30 border border-orange-400/40">69</div>
        <div>
         <span class="font-extrabold tracking-tight text-sm text-white block leading-tight">BINI <span class="text-orange-400">SYARIAH</span></span>
-        <span class="text-[9px] text-orange-300 font-semibold tracking-wider block uppercase">Suami Cari,Istri Menikmati</span>
+        <span class="text-[9px] text-orange-300 font-semibold tracking-wider block uppercase">Suami Cari, Istri Menikmati</span>
        </div>
       </div>
-      <button onclick="toggleDrawer(false)" class="w-8 h-8 rounded-full bg-slate-800/80 text-slate-400 hover:text-white flex items-center justify-center transition">
-<i class="fa-solid fa-xmark"></i>
-</button>
+      <button onclick="toggleDrawer(false)" class="w-8 h-8 rounded-full bg-slate-800/80 text-slate-400 hover:text-white flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
      </div>
      <div class="flex items-center space-x-3 mt-3">
-      <div id="drawerAvatar" class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500/20 to-amber-500/20 border border-orange-500/40 flex items-center justify-center font-bold text-orange-400 text-lg">
-       --
-      </div>
+      <div id="drawerAvatar" class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500/20 to-amber-500/20 border border-orange-500/40 flex items-center justify-center font-bold text-orange-400 text-lg">--</div>
       <div>
        <h3 id="drawerName" class="font-bold text-sm text-white">-</h3>
        <p id="drawerId" class="text-[11px] text-orange-400 font-medium">-</p>
@@ -54,267 +50,137 @@
      </div>
     </div>
     <nav class="p-4 space-y-1.5">
-     <button onclick="toggleDrawer(false); switchTab('beranda')" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-300 hover:bg-slate-900 hover:text-orange-400 transition text-left">
-<i class="fa-solid fa-house w-5 text-center text-orange-400"></i>
-<span class="text-xs font-semibold">Beranda & Saldo</span>
-</button>
-     <button onclick="toggleDrawer(false); openModal('transferModal')" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-300 hover:bg-slate-900 hover:text-orange-400 transition text-left">
-<i class="fa-solid fa-paper-plane w-5 text-center text-amber-400"></i>
-<span class="text-xs font-semibold">Transfer Dana</span>
-</button>
-     <button onclick="toggleDrawer(false); openMyQrCode()" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-300 hover:bg-slate-900 hover:text-orange-400 transition text-left">
-<i class="fa-solid fa-qrcode w-5 text-center text-orange-400"></i>
-<span class="text-xs font-semibold">QR Code Saya</span>
-</button>
-     <button onclick="toggleDrawer(false); switchTab('riwayat')" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-300 hover:bg-slate-900 hover:text-orange-400 transition text-left">
-<i class="fa-solid fa-receipt w-5 text-center text-orange-300"></i>
-<span class="text-xs font-semibold">Riwayat Transaksi</span>
-</button>
+     <button onclick="toggleDrawer(false); switchTab('beranda')" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-300 hover:bg-slate-900 hover:text-orange-400 transition text-left"><i class="fa-solid fa-house w-5 text-center text-orange-400"></i><span class="text-xs font-semibold">Beranda & Saldo</span></button>
+     <button onclick="toggleDrawer(false); openModal('transferModal')" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-300 hover:bg-slate-900 hover:text-orange-400 transition text-left"><i class="fa-solid fa-paper-plane w-5 text-center text-amber-400"></i><span class="text-xs font-semibold">Transfer Dana (012)</span></button>
+     <button onclick="toggleDrawer(false); openMyQrCode()" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-300 hover:bg-slate-900 hover:text-orange-400 transition text-left"><i class="fa-solid fa-qrcode w-5 text-center text-orange-400"></i><span class="text-xs font-semibold">QR Code Saya</span></button>
+     <button onclick="toggleDrawer(false); switchTab('riwayat')" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-300 hover:bg-slate-900 hover:text-orange-400 transition text-left"><i class="fa-solid fa-receipt w-5 text-center text-orange-300"></i><span class="text-xs font-semibold">Riwayat Transaksi</span></button>
     </nav>
    </div>
    <div class="p-4 border-t border-slate-800/80">
-    <button onclick="handleLogout()" class="w-full flex items-center justify-center space-x-2 py-3 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-400 hover:bg-rose-500 hover:text-white transition text-xs font-bold active:scale-95">
-<i class="fa-solid fa-right-from-bracket"></i>
-<span>Keluar (Logout)</span>
-</button>
+    <button onclick="handleLogout()" class="w-full flex items-center justify-center space-x-2 py-3 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-400 hover:bg-rose-500 hover:text-white transition text-xs font-bold active:scale-95"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar (Logout)</span></button>
    </div>
   </aside>
-  <!-- HEADER & SALDO -->
+
   <header class="p-5 pt-6 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-900">
    <div class="flex justify-between items-center mb-5">
     <div class="flex items-center space-x-3">
-     <button onclick="toggleDrawer(true)" aria-label="Buka Menu" class="w-10 h-10 rounded-2xl bg-slate-800/90 border border-slate-700/80 flex items-center justify-center text-slate-200 hover:border-orange-500/50 hover:text-orange-400 transition active:scale-95">
-<i class="fa-solid fa-bars-staggered text-base"></i>
-</button>
+     <button onclick="toggleDrawer(true)" class="w-10 h-10 rounded-2xl bg-slate-800/90 border border-slate-700/80 flex items-center justify-center text-slate-200 hover:border-orange-500/50 hover:text-orange-400 transition"><i class="fa-solid fa-bars-staggered text-base"></i></button>
      <div class="flex items-center space-x-2.5">
-      <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white font-extrabold text-sm tracking-tighter shadow-md shadow-orange-500/30">
-       69
-      </div>
+      <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white font-extrabold text-sm tracking-tighter shadow-md shadow-orange-500/30">69</div>
       <div>
-       <div class="flex items-center space-x-1.5">
-        <span id="syncDot" class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-        <span class="text-[10px] text-orange-400 font-bold uppercase tracking-wider">BINI SYARIAH</span>
-       </div>
+       <div class="flex items-center space-x-1.5"><span id="syncDot" class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span><span class="text-[10px] text-orange-400 font-bold uppercase tracking-wider">BINI SYARIAH</span></div>
        <h1 id="headerNasabahName" class="text-xs font-bold text-white tracking-tight">Memuat...</h1>
       </div>
      </div>
     </div>
     <div class="flex items-center space-x-2">
-     <button onclick="fetchNasabahData()" title="Refresh Data" class="w-9 h-9 rounded-2xl bg-slate-800/80 border border-slate-700/70 flex items-center justify-center text-slate-300 hover:text-orange-400 transition">
-<i class="fa-solid fa-arrows-rotate text-xs"></i>
-</button>
-     <button onclick="openMyQrCode()" title="QR Code Saya" class="w-9 h-9 rounded-2xl bg-orange-500/20 border border-orange-500/40 flex items-center justify-center text-orange-400 hover:bg-orange-500 hover:text-slate-950 transition">
-<i class="fa-solid fa-qrcode text-xs"></i>
-</button>
+     <button onclick="fetchNasabahData()" class="w-9 h-9 rounded-2xl bg-slate-800/80 border border-slate-700/70 flex items-center justify-center text-slate-300 hover:text-orange-400 transition"><i class="fa-solid fa-arrows-rotate text-xs"></i></button>
+     <button onclick="openMyQrCode()" class="w-9 h-9 rounded-2xl bg-orange-500/20 border border-orange-500/40 flex items-center justify-center text-orange-400 hover:bg-orange-500 hover:text-slate-950 transition"><i class="fa-solid fa-qrcode text-xs"></i></button>
     </div>
    </div>
-   <!-- Kartu Saldo Rekening -->
+
    <div class="nasabah-mesh p-5 rounded-3xl border border-orange-500/30 shadow-2xl relative overflow-hidden animate-card">
     <div class="flex justify-between items-center mb-4">
-     <div class="flex items-center space-x-2">
-      <span class="px-2.5 py-1 rounded-lg bg-slate-950/70 border border-orange-500/30 text-[10px] font-bold tracking-wider text-orange-300 uppercase">
-Suami Cari,Istri Menikmati
-</span>
-     </div>
-     <button onclick="openMyQrCode()" class="px-2.5 py-1 rounded-xl bg-orange-500/20 text-orange-400 hover:bg-orange-500 hover:text-slate-950 font-bold text-[10px] transition flex items-center gap-1 border border-orange-500/30">
-      <i class="fa-solid fa-qrcode"></i> QR Saya
-     </button>
+     <span class="px-2.5 py-1 rounded-lg bg-slate-950/70 border border-orange-500/30 text-[10px] font-bold tracking-wider text-orange-300 uppercase">Suami Cari, Istri Menikmati</span>
+     <button onclick="openMyQrCode()" class="px-2.5 py-1 rounded-xl bg-orange-500/20 text-orange-400 hover:bg-orange-500 hover:text-slate-950 font-bold text-[10px] transition flex items-center gap-1 border border-orange-500/30"><i class="fa-solid fa-qrcode"></i> QR Saya</button>
     </div>
     <div class="mb-4">
-     <div class="flex items-center space-x-2">
-      <span class="text-xs text-slate-300 font-medium">Saldo Efektif</span>
-      <button onclick="toggleBalanceVisibility()" class="text-slate-300 hover:text-white transition p-1">
-<i id="eyeIcon" class="fa-solid fa-eye text-xs"></i>
-</button>
-     </div>
-     <h2 id="mainBalanceDisplay" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mt-1">
-      Rp 0
-     </h2>
+     <div class="flex items-center space-x-2"><span class="text-xs text-slate-300 font-medium">Saldo Efektif</span><button onclick="toggleBalanceVisibility()" class="text-slate-300 hover:text-white transition p-1"><i id="eyeIcon" class="fa-solid fa-eye text-xs"></i></button></div>
+     <h2 id="mainBalanceDisplay" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mt-1">Rp 0</h2>
     </div>
     <div class="pt-3.5 border-t border-white/10 flex justify-between items-center text-xs">
-     <div class="flex items-center space-x-2 bg-slate-950/50 px-3 py-1.5 rounded-xl border border-white/10">
-      <span class="text-slate-400 text-[11px]">No. Rek:</span>
-      <strong id="accountNumberText" class="text-slate-100 font-mono tracking-wider text-xs">-</strong>
-     </div>
+     <div class="flex items-center space-x-2 bg-slate-950/50 px-3 py-1.5 rounded-xl border border-white/10"><span class="text-slate-400 text-[11px]">No. Rek:</span><strong id="accountNumberText" class="text-slate-100 font-mono tracking-wider text-xs">-</strong></div>
      <span id="nasabahIdBadge" class="text-[10px] font-mono text-orange-300 font-bold bg-orange-400/10 px-2 py-1 rounded-lg">-</span>
     </div>
    </div>
   </header>
-  <!-- KONTEN UTAMA -->
+
   <main class="px-5 flex-1 space-y-5 py-4">
-   <!-- TAB 1: BERANDA -->
    <section id="tab-beranda" class="space-y-4 animate-card">
     <div>
-     <div class="flex justify-between items-center mb-2">
-      <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Informasi & Promo Terbaru</h3>
-      <span class="w-2 h-2 rounded-full bg-orange-400 animate-ping"></span>
-     </div>
-     <div id="largeBroadcastCarousel" class="relative rounded-3xl overflow-hidden border border-orange-500/30 shadow-2xl bg-slate-950 min-h-[150px] flex flex-col justify-between">
-      <div class="p-6 text-center text-xs text-slate-500">Memuat informasi broadcast dari server...</div>
-     </div>
+     <div class="flex justify-between items-center mb-2"><h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Pengumuman & Informasi</h3><span class="w-2 h-2 rounded-full bg-orange-400 animate-ping"></span></div>
+     <div id="largeBroadcastCarousel" class="relative rounded-3xl overflow-hidden border border-orange-500/30 shadow-2xl bg-slate-950 min-h-[150px] flex flex-col justify-between"><div class="p-6 text-center text-xs text-slate-500">Memuat informasi broadcast...</div></div>
     </div>
     <div class="pt-2">
      <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Menu Layanan</h3>
      <div class="grid grid-cols-2 gap-3">
-      <button onclick="openModal('transferModal')" class="flex items-center space-x-3 p-4 rounded-2xl bg-slate-800/40 border border-slate-800 hover:border-orange-500/50 hover:bg-slate-800/80 transition active:scale-95 text-left">
-<div class="w-12 h-12 bg-orange-500/15 text-orange-400 rounded-2xl flex items-center justify-center text-lg shrink-0">
-<i class="fa-solid fa-paper-plane"></i>
-</div>
-<div>
-<h4 class="text-xs font-bold text-white">Transfer</h4>
-<p class="text-[10px] text-slate-400 mt-0.5">Antar Rekening</p>
-</div>
-</button>
-      <button onclick="openMyQrCode()" class="flex items-center space-x-3 p-4 rounded-2xl bg-slate-800/40 border border-slate-800 hover:border-amber-500/50 hover:bg-slate-800/80 transition active:scale-95 text-left">
-<div class="w-12 h-12 bg-amber-500/15 text-amber-400 rounded-2xl flex items-center justify-center text-lg shrink-0">
-<i class="fa-solid fa-qrcode"></i>
-</div>
-<div>
-<h4 class="text-xs font-bold text-white">QR Saya</h4>
-<p class="text-[10px] text-slate-400 mt-0.5">Terima Setoran</p>
-</div>
-</button>
+      <button onclick="openModal('transferModal')" class="flex items-center space-x-3 p-4 rounded-2xl bg-slate-800/40 border border-slate-800 hover:border-orange-500/50 hover:bg-slate-800/80 transition active:scale-95 text-left"><div class="w-12 h-12 bg-orange-500/15 text-orange-400 rounded-2xl flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-paper-plane"></i></div><div><h4 class="text-xs font-bold text-white">Transfer (012)</h4><p class="text-[10px] text-slate-400 mt-0.5">Antar Rekening</p></div></button>
+      <button onclick="openMyQrCode()" class="flex items-center space-x-3 p-4 rounded-2xl bg-slate-800/40 border border-slate-800 hover:border-amber-500/50 hover:bg-slate-800/80 transition active:scale-95 text-left"><div class="w-12 h-12 bg-amber-500/15 text-amber-400 rounded-2xl flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-qrcode"></i></div><div><h4 class="text-xs font-bold text-white">QR Saya</h4><p class="text-[10px] text-slate-400 mt-0.5">Terima Setoran</p></div></button>
      </div>
     </div>
     <div class="pt-2">
-     <div class="flex justify-between items-center mb-3">
-      <h3 class="font-bold text-sm text-white">Mutasi Rekening Terakhir</h3>
-      <button onclick="switchTab('riwayat')" class="text-xs text-orange-400 font-semibold hover:underline">Lihat Semua</button>
-     </div>
-     <div id="recentTransactionsList" class="space-y-2">
-      <p class="text-[11px] text-slate-500 text-center py-2">Memuat data mutasi...</p>
-     </div>
+     <div class="flex justify-between items-center mb-3"><h3 class="font-bold text-sm text-white">Mutasi Terakhir</h3><button onclick="switchTab('riwayat')" class="text-xs text-orange-400 font-semibold hover:underline">Lihat Semua</button></div>
+     <div id="recentTransactionsList" class="space-y-2"><p class="text-[11px] text-slate-500 text-center py-2">Memuat data mutasi...</p></div>
     </div>
    </section>
-   <!-- TAB 2: RIWAYAT -->
+
    <section id="tab-riwayat" class="hidden space-y-4 animate-card">
     <div class="flex justify-between items-center">
-     <div>
-      <h3 class="text-sm font-bold text-white">Riwayat Transaksi Rekening</h3>
-      <p class="text-[11px] text-slate-400">Semua aktivitas masuk dan keluar</p>
-     </div>
+     <div><h3 class="text-sm font-bold text-white">Riwayat Transaksi</h3><p class="text-[11px] text-slate-400">Seluruh aktivitas masuk dan keluar</p></div>
      <span class="text-[11px] font-mono text-orange-400 font-bold bg-slate-800 px-2.5 py-1 rounded-xl border border-slate-700" id="txCountBadge">0 Transaksi</span>
     </div>
     <div id="fullHistoryList" class="space-y-2.5"></div>
    </section>
   </main>
-  <!-- BOTTOM NAVIGATION -->
+
   <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-slate-950/95 backdrop-blur-md border-t border-slate-800/90 py-2.5 px-6 flex justify-around items-center z-30">
-   <button onclick="switchTab('beranda')" id="nav-beranda" class="flex flex-col items-center text-orange-400 transition">
-<i class="fa-solid fa-house text-base"></i>
-<span class="text-[10px] mt-1 font-semibold">Beranda</span>
-</button>
-   <button onclick="openModal('transferModal')" class="flex flex-col items-center text-slate-400 hover:text-orange-400 transition">
-<i class="fa-solid fa-paper-plane text-base"></i>
-<span class="text-[10px] mt-1 font-semibold">Transfer</span>
-</button>
-   <button onclick="openMyQrCode()" class="flex flex-col items-center text-slate-400 hover:text-orange-400 transition">
-<i class="fa-solid fa-qrcode text-base"></i>
-<span class="text-[10px] mt-1 font-semibold">QR Saya</span>
-</button>
-   <button onclick="switchTab('riwayat')" id="nav-riwayat" class="flex flex-col items-center text-slate-400 hover:text-orange-400 transition">
-<i class="fa-solid fa-receipt text-base"></i>
-<span class="text-[10px] mt-1 font-semibold">Mutasi</span>
-</button>
+   <button onclick="switchTab('beranda')" id="nav-beranda" class="flex flex-col items-center text-orange-400 transition"><i class="fa-solid fa-house text-base"></i><span class="text-[10px] mt-1 font-semibold">Beranda</span></button>
+   <button onclick="openModal('transferModal')" class="flex flex-col items-center text-slate-400 hover:text-orange-400 transition"><i class="fa-solid fa-paper-plane text-base"></i><span class="text-[10px] mt-1 font-semibold">Transfer</span></button>
+   <button onclick="openMyQrCode()" class="flex flex-col items-center text-slate-400 hover:text-orange-400 transition"><i class="fa-solid fa-qrcode text-base"></i><span class="text-[10px] mt-1 font-semibold">QR Saya</span></button>
+   <button onclick="switchTab('riwayat')" id="nav-riwayat" class="flex flex-col items-center text-slate-400 hover:text-orange-400 transition"><i class="fa-solid fa-receipt text-base"></i><span class="text-[10px] mt-1 font-semibold">Mutasi</span></button>
   </nav>
  </div>
 
- <!-- MODAL QR KODE SAYA -->
+ <!-- MODALS (QR, TRANSFER, SCANNER, STRUK) -->
  <div id="myQrModal" class="fixed inset-0 bg-black/85 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-700 w-full max-w-sm rounded-3xl p-6 text-center space-y-4 shadow-2xl animate-card">
-   <div class="flex justify-between items-center">
-    <h3 class="font-bold text-sm text-white">QR Code Rekening Saya</h3>
-    <button onclick="closeModal('myQrModal')" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
-     <i class="fa-solid fa-xmark"></i>
-    </button>
-   </div>
-   <div class="bg-white p-4 rounded-2xl w-48 h-48 mx-auto flex items-center justify-center shadow-lg">
-    <div id="qrcodeContainer"></div>
-   </div>
-   <div>
-    <h4 id="qrModalName" class="font-bold text-sm text-white">-</h4>
-    <p id="qrModalId" class="text-xs font-mono text-orange-400 font-bold mt-0.5">-</p>
-   </div>
-   <span class="text-[10px] text-slate-400 block">Tunjukkan QR ini untuk menerima transfer / seto tunai.</span>
+   <div class="flex justify-between items-center"><h3 class="font-bold text-sm text-white">QR Code Rekening Saya</h3><button onclick="closeModal('myQrModal')" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button></div>
+   <div class="bg-white p-4 rounded-2xl w-48 h-48 mx-auto flex items-center justify-center shadow-lg"><div id="qrcodeContainer"></div></div>
+   <div><h4 id="qrModalName" class="font-bold text-sm text-white">-</h4><p id="qrModalId" class="text-xs font-mono text-orange-400 font-bold mt-0.5">-</p></div>
   </div>
  </div>
 
- <!-- MODAL TRANSFER -->
  <div id="transferModal" class="fixed inset-0 bg-black/80 backdrop-blur-xs z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
   <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-   <div class="flex justify-between items-center mb-5">
-    <div class="flex items-center space-x-2.5">
-     <div class="w-9 h-9 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center">
-      <i class="fa-solid fa-paper-plane"></i>
-     </div>
-     <h3 class="font-bold text-base text-white">Transfer Antar Rekening</h3>
-    </div>
-    <button onclick="closeModal('transferModal')" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
-<i class="fa-solid fa-xmark"></i>
-</button>
-   </div>
+   <div class="flex justify-between items-center mb-5"><div class="flex items-center space-x-2.5"><div class="w-9 h-9 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center"><i class="fa-solid fa-paper-plane"></i></div><h3 class="font-bold text-base text-white">Transfer Antar Rekening (012)</h3></div><button onclick="closeModal('transferModal')" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button></div>
    <form onsubmit="handleTransferSubmit(event)" class="space-y-4">
     <div>
      <label class="block text-xs font-semibold text-slate-300 mb-1.5">ID / No. Rekening Tujuan</label>
      <div class="flex gap-2">
-      <div class="flex-1 flex items-center bg-slate-950 border border-slate-700 focus-within:border-orange-500 rounded-xl overflow-hidden">
-       <span class="pl-3.5 pr-1 py-2.5 text-xs font-mono font-extrabold text-orange-400 select-none">NSB-</span>
-       <input type="text" id="tfTargetId" oninput="lookupTargetNasabah(this.value)" required maxlength="5" inputmode="numeric" placeholder="002" class="w-full bg-transparent pr-3.5 py-2.5 text-xs font-mono uppercase text-white focus:outline-none">
-      </div>
-      <button type="button" onclick="openScannerCameraNasabah()" class="px-3.5 py-2.5 rounded-xl bg-orange-500/20 border border-orange-500/40 text-orange-400 hover:bg-orange-500 hover:text-slate-950 font-bold text-xs transition flex items-center gap-1.5 shrink-0">
-<i class="fa-solid fa-qrcode"></i>
-<span>Scan</span>
-</button>
+      <div class="flex-1 flex items-center bg-slate-950 border border-slate-700 rounded-xl overflow-hidden"><span class="pl-3.5 pr-1 py-2.5 text-xs font-mono font-extrabold text-orange-400 select-none">NSB-</span><input type="text" id="tfTargetId" oninput="lookupTargetNasabah(this.value)" required maxlength="5" inputmode="numeric" placeholder="002" class="w-full bg-transparent pr-3.5 py-2.5 text-xs font-mono uppercase text-white focus:outline-none"></div>
+      <button type="button" onclick="openScannerCameraNasabah()" class="px-3.5 py-2.5 rounded-xl bg-orange-500/20 border border-orange-500/40 text-orange-400 hover:bg-orange-500 hover:text-slate-950 font-bold text-xs transition flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-qrcode"></i><span>Scan</span></button>
      </div>
      <p id="targetLookupName" class="text-[11px] text-slate-400 mt-1.5 font-medium">Ketik ID tujuan untuk melihat nama penerima</p>
     </div>
     <div>
      <label class="block text-xs font-semibold text-slate-300 mb-1.5">Nominal Transfer (Rp)</label>
-     <input type="number" id="tfAmount" required min="1000" step="500" placeholder="Masukkan nominal" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-3 text-base font-extrabold text-orange-400 focus:outline-none focus:border-orange-500">
+     <input type="number" id="tfAmount" required min="1000" step="500" placeholder="Masukkan nominal" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-3 text-base font-extrabold text-orange-400 focus:outline-none">
      <div class="flex gap-2 mt-2">
-      <button type="button" onclick="document.getElementById('tfAmount').value=50000" class="px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] text-slate-300 hover:bg-slate-700">50rb</button>
-      <button type="button" onclick="document.getElementById('tfAmount').value=100000" class="px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] text-slate-300 hover:bg-slate-700">100rb</button>
-      <button type="button" onclick="document.getElementById('tfAmount').value=250000" class="px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] text-slate-300 hover:bg-slate-700">250rb</button>
-      <button type="button" onclick="document.getElementById('tfAmount').value=500000" class="px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] text-slate-300 hover:bg-slate-700">500rb</button>
+      <button type="button" onclick="document.getElementById('tfAmount').value=50000" class="px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] text-slate-300">50rb</button>
+      <button type="button" onclick="document.getElementById('tfAmount').value=100000" class="px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] text-slate-300">100rb</button>
+      <button type="button" onclick="document.getElementById('tfAmount').value=250000" class="px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] text-slate-300">250rb</button>
+      <button type="button" onclick="document.getElementById('tfAmount').value=500000" class="px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] text-slate-300">500rb</button>
      </div>
     </div>
-    <div>
-     <label class="block text-xs font-semibold text-slate-300 mb-1.5">Catatan Transfer (Opsional)</label>
-     <input type="text" id="tfNote" placeholder="Contoh: Setoran uang belanja" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-orange-500">
-    </div>
-    <div>
-     <label class="block text-xs font-semibold text-slate-300 mb-1.5">PIN Transaksi (6 Digit)</label>
-     <input type="password" id="tfPin" required maxlength="6" inputmode="numeric" placeholder="••••••" class="w-full tracking-[0.6em] text-center font-bold bg-slate-950 border border-slate-700 focus:border-orange-500 rounded-xl py-3 text-white focus:outline-none">
-    </div>
-    <button type="submit" id="submitTfBtn" class="w-full py-3.5 rounded-2xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs shadow-lg shadow-orange-600/30 transition">
-Kirim Transfer Sekarang
-</button>
+    <div><label class="block text-xs font-semibold text-slate-300 mb-1.5">Catatan Transfer (Opsional)</label><input type="text" id="tfNote" placeholder="Contoh: Pembayaran iuran" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none"></div>
+    <div><label class="block text-xs font-semibold text-slate-300 mb-1.5">PIN Transaksi (6 Digit)</label><input type="password" id="tfPin" required maxlength="6" inputmode="numeric" placeholder="••••••" class="w-full tracking-[0.6em] text-center font-bold bg-slate-950 border border-slate-700 rounded-xl py-3 text-white focus:outline-none"></div>
+    <button type="submit" id="submitTfBtn" class="w-full py-3.5 rounded-2xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs transition shadow-lg shadow-orange-600/30">Kirim Transfer Sekarang</button>
    </form>
   </div>
  </div>
- <!-- MODAL SCANNER KAMERA FULL NASABAH -->
+
  <div id="scannerModal" class="fixed inset-0 bg-black/85 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-700 w-full max-w-sm rounded-3xl p-6 text-center space-y-4 shadow-2xl">
-   <div class="flex justify-between items-center">
-    <h3 class="font-bold text-sm text-white">Scan QR Tujuan Transfer</h3>
-    <button onclick="closeScannerCameraNasabah()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
-<i class="fa-solid fa-xmark"></i>
-</button>
-   </div>
-   <div class="relative bg-slate-950 border border-slate-800 rounded-2xl h-72 flex flex-col items-center justify-center overflow-hidden">
-    <div id="readerNasabah" class="w-full h-full"></div>
-   </div>
-   <span class="text-[10px] text-slate-400">Arahkan kamera ke QR Code Rekening Tujuan</span>
+   <div class="flex justify-between items-center"><h3 class="font-bold text-sm text-white">Scan QR Tujuan Transfer</h3><button onclick="closeScannerCameraNasabah()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button></div>
+   <div class="relative bg-slate-950 border border-slate-800 rounded-2xl h-72 flex flex-col items-center justify-center overflow-hidden"><div id="readerNasabah" class="w-full h-full"></div></div>
   </div>
  </div>
- <!-- MODAL STRUK -->
+
  <div id="receiptModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
   <div class="bg-slate-900 border border-slate-700 w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-4 animate-card">
    <div class="text-center border-b border-dashed border-slate-700 pb-3 mb-2">
-    <div class="w-12 h-12 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center mx-auto mb-2 text-xl">
-     <i class="fa-solid fa-check"></i>
-    </div>
-    <span class="text-[10px] font-bold uppercase tracking-widest text-orange-400">TRANSFER BERHASIL</span>
+    <div class="w-12 h-12 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center mx-auto mb-2 text-xl"><i class="fa-solid fa-check"></i></div>
+    <span class="text-[10px] font-bold uppercase tracking-widest text-orange-400">TRANSFER BERHASIL (012)</span>
     <h3 id="rcpAmount" class="text-2xl font-extrabold text-white mt-1">Rp 0</h3>
     <p id="rcpDate" class="text-[11px] text-slate-400 mt-0.5">-</p>
    </div>
@@ -327,675 +193,392 @@ Kirim Transfer Sekarang
    <div class="pt-2 space-y-3 bg-slate-950/60 p-3.5 rounded-2xl border border-slate-800">
     <p class="text-xs text-center font-semibold text-slate-300">Kirim struk PDF ke WhatsApp Penerima?</p>
     <div class="grid grid-cols-2 gap-2.5">
-     <button onclick="confirmSendWhatsApp(false)" class="py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold hover:bg-slate-700 transition">
-Tidak
-</button>
-     <button onclick="confirmSendWhatsApp(true)" class="py-2.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white text-xs font-extrabold transition flex items-center justify-center gap-1.5 shadow-lg shadow-orange-600/30">
-<i class="fa-brands fa-whatsapp text-sm"></i>
-<span>Ya, Kirim</span>
-</button>
+     <button onclick="confirmSendWhatsApp(false)" class="py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">Tidak</button>
+     <button onclick="confirmSendWhatsApp(true)" class="py-2.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white text-xs font-extrabold flex items-center justify-center gap-1.5 shadow-lg"><i class="fa-brands fa-whatsapp text-sm"></i><span>Ya, Kirim</span></button>
     </div>
    </div>
   </div>
  </div>
+
  <div id="toastContainer" class="fixed top-5 left-1/2 -translate-x-1/2 z-[70] w-[90%] max-w-sm pointer-events-none space-y-2"></div>
 </body>
 
-<style>body { font-family: 'Inter', sans-serif; background-color: #020617; }
-        ::-webkit-scrollbar { width: 4px; height: 4px; }
-        ::-webkit-scrollbar-track { background: #0f172a; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
+<style>
+  body { font-family: 'Inter', sans-serif; background-color: #020617; }
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: #0f172a; }
+  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
+  @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  .animate-card { animation: fadeSlideUp 0.45s ease-out forwards; }
+  .nasabah-mesh { background-image: radial-gradient(at 85% 15%, rgba(249, 115, 22, 0.28) 0px, transparent 55%), radial-gradient(at 15% 85%, rgba(234, 88, 12, 0.22) 0px, transparent 55%), linear-gradient(135deg, #0f172a 0%, #29150b 50%, #431407 100%); }
+  #readerNasabah { width: 100% !important; height: 100% !important; border: none !important; }
+  #readerNasabah video { width: 100% !important; height: 100% !important; object-fit: cover !important; border-radius: 1rem; }
+  #readerNasabah__dashboard_section_csr { display: none !important; }
+</style>
 
-        @keyframes fadeSlideUp {
-            from { opacity: 0; transform: translateY(14px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-card { animation: fadeSlideUp 0.45s ease-out forwards; }
-
-        .nasabah-mesh {
-            background-image: 
-                radial-gradient(at 85% 15%, rgba(249, 115, 22, 0.28) 0px, transparent 55%),
-                radial-gradient(at 15% 85%, rgba(234, 88, 12, 0.22) 0px, transparent 55%),
-                linear-gradient(135deg, #0f172a 0%, #29150b 50%, #431407 100%);
-        }
-
-        #readerNasabah {
-            width: 100% !important;
-            height: 100% !important;
-            border: none !important;
-        }
-        #readerNasabah video {
-            width: 100% !important;
-            height: 100% !important;
-            object-fit: cover !important;
-            border-radius: 1rem;
-        }
-        #readerNasabah__dashboard_section_csr { display: none !important; }</style>
-
-<!-- REGISTRASI SERVICE WORKER UNTUK PWA -->
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then((reg) => console.log('Service Worker berhasil didaftarkan:', reg.scope))
-        .catch((err) => console.log('Service Worker gagal didaftarkan:', err));
+      navigator.serviceWorker.register('./sw.js').then((reg) => {
+        console.log('Service Worker terdaftar:', reg);
+      }).catch(() => {});
     });
   }
-</script>
 
-<!-- FIREBASE WEB SDK (MODULAR) -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-app.js";
-    import { getMessaging, getToken } from "https://www.gstatic.com/firebasejs/13.3.0/firebase-messaging.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyC7G04Z82kDG7DuNMCH0oNcGiRFOus1U1A",
-      authDomain: "bini-syariah-admin.firebaseapp.com",
+  // Inisialisasi Firebase Klien Berdasarkan File JSON Anda
+  const firebaseConfig = {
+      apiKey: "AIzaSyAbsj8FdkvymawPqBBCsNVHjkN26b8MytU",
       projectId: "bini-syariah-admin",
       storageBucket: "bini-syariah-admin.firebasestorage.app",
       messagingSenderId: "515967831505",
-      appId: "1:515967831505:web:44b54a0f2f1f4d26a6e4f0"
-    };
+      appId: "1:515967831505:android:bcf557b78333754fa6e4f0"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const messaging = getMessaging(app);
+  if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+  }
+  const messaging = firebase.messaging();
 
-    window.initFirebaseWebToken = async function(nasabahId) {
-        try {
-            const permission = await Notification.requestPermission();
-            if (permission === 'granted') {
-                const currentToken = await getToken(messaging, { 
-                    vapidKey: "BDFw0DN5sRHyKsXnbOJv4BKHIjQ3lw4KsdTa-p5bR1D24i2OvzCB6j540q6ePq8M_GGsph8PIiGEqxMWnGco2oI" 
-                });
-                if (currentToken) {
-                    registerDeviceFcmToken(currentToken, nasabahId);
-                }
-            }
-        } catch (err) {
-            console.error("Gagal mendapatkan FCM Token Web:", err);
-        }
-    };
+  async function registerFcmToken(nasabahId) {
+      try {
+          const permission = await Notification.requestPermission();
+          if (permission === 'granted') {
+              const token = await messaging.getToken();
+              if (token) {
+                  fetch(SCRIPT_URL, {
+                      method: 'POST',
+                      body: JSON.stringify({ action: 'saveFcmToken', data: { nasabahId: nasabahId, token: token } })
+                  });
+              }
+          }
+      } catch (e) {}
+  }
 </script>
 
 <script>
-        const sessionNasabahId = sessionStorage.getItem('nusa_nasabah_session');
-        if (!sessionNasabahId) {
-            window.location.href = 'index.html';
-        }
-
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwu0kGhiGxqD1wH5MeqWxIDMfep_SsTLYkpYMnjwzGJNu2kUPAW8T83SL2C1t52CH9r/exec";
-
-        let currentNasabah = null;
-        let allNasabahData = [];
-        let nasabahMutasi = [];
-        let broadcastBanners = [];
-        let activeBannerIdx = 0;
-        let isBalanceHidden = false;
-        let pendingReceiptData = null;
-        let html5QrCodeNasabah = null;
-        let qrCodeInstance = null;
-
-        function openMyQrCode() {
-            if (!currentNasabah) return;
-            openModal('myQrModal');
-            
-            document.getElementById('qrModalName').textContent = currentNasabah.name;
-            document.getElementById('qrModalId').textContent = `${currentNasabah.id} • ${currentNasabah.acc}`;
-            
-            const container = document.getElementById('qrcodeContainer');
-            container.innerHTML = '';
-            
-            qrCodeInstance = new QRCode(container, {
-                text: currentNasabah.id,
-                width: 160,
-                height: 160,
-                colorDark: "#020617",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
-            });
-        }
-
-        async function registerDeviceFcmToken(token, overrideId = null) {
-            const targetId = overrideId || sessionNasabahId;
-            if (!token || !targetId) return;
-            if (localStorage.getItem('saved_fcm_token_' + targetId) === token) return;
-
-            try {
-                const res = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: 'saveFcmToken',
-                        nasabahId: targetId,
-                        token: token
-                    })
-                });
-                const result = await res.json();
-                if (result.status === 'success') {
-                    localStorage.setItem('saved_fcm_token_' + targetId, token);
-                    console.log('FCM Token berhasil disinkronkan ke Google Sheets');
-                }
-            } catch (err) {
-                console.error('Gagal menyimpan FCM Token:', err);
-            }
-        }
-
-        function formatRupiah(num) {
-            return 'Rp ' + Number(num || 0).toLocaleString('id-ID');
-        }
-
-        function normalizeCustomerId(rawInput) {
-            let clean = String(rawInput || '').trim().toUpperCase();
-            if (clean.startsWith('NSB-')) clean = clean.replace('NSB-', '');
-            return clean ? 'NSB-' + clean : '';
-        }
-
-        function terbilangLuwes(angka) {
-            const bilangan = ["", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas"];
-            let n = parseInt(angka);
-            if (isNaN(n) || n === 0) return "nol rupiah";
-
-            function convert(num) {
-                if (num < 12) return bilangan[num];
-                if (num < 20) return convert(num - 10) + " belas";
-                if (num < 100) return convert(Math.floor(num / 10)) + " puluh " + convert(num % 10);
-                if (num < 200) return "seratus " + convert(num - 100);
-                if (num < 1000) return convert(Math.floor(num / 100)) + " ratus " + convert(num % 100);
-                if (num < 2000) return "seribu " + convert(num - 1000);
-                if (num < 1000000) return convert(Math.floor(num / 1000)) + " ribu " + convert(num % 1000);
-                if (num < 1000000000) return convert(Math.floor(num / 1000000)) + " juta " + convert(num % 1000000);
-                return num.toString();
-            }
-            return convert(n).replace(/\s+/g, ' ').trim() + " rupiah";
-        }
-
-        function speakNotification(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'id-ID';
-                utterance.rate = 1.0;
-                window.speechSynthesis.speak(utterance);
-            }
-        }
-
-        function toggleDrawer(show) {
-            const drawer = document.getElementById('navDrawer');
-            const backdrop = document.getElementById('drawerBackdrop');
-            if (show) {
-                backdrop.classList.remove('hidden');
-                setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
-                drawer.classList.remove('-translate-x-full');
-            } else {
-                drawer.classList.add('-translate-x-full');
-                backdrop.classList.add('opacity-0');
-                setTimeout(() => backdrop.classList.add('hidden'), 300);
-            }
-        }
-
-        function handleLogout() {
-            sessionStorage.removeItem('nusa_nasabah_session');
-            showToast('Keluar dari akun nasabah...', 'warning');
-            setTimeout(() => { window.location.href = 'index.html'; }, 700);
-        }
-
-        function switchTab(tabName) {
-            ['beranda', 'riwayat'].forEach(t => {
-                document.getElementById('tab-' + t).classList.add('hidden');
-                document.getElementById('nav-' + t).className = 'flex flex-col items-center text-slate-400 hover:text-orange-400 transition';
-            });
-            document.getElementById('tab-' + tabName).classList.remove('hidden');
-            document.getElementById('nav-' + tabName).className = 'flex flex-col items-center text-orange-400 transition';
-
-            if (tabName === 'riwayat') renderFullHistory();
-        }
-
-        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-        function openScannerCameraNasabah() {
-            openModal('scannerModal');
-            if (!html5QrCodeNasabah) {
-                html5QrCodeNasabah = new Html5Qrcode("readerNasabah");
-            }
-            html5QrCodeNasabah.start(
-                { facingMode: "environment" }, 
-                { fps: 10, qrbox: { width: 240, height: 240 } },
-                (decodedText) => { handleSuccessfulScanNasabah(decodedText); },
-                (errorMessage) => {}
-            ).catch(err => {
-                showToast("Akses kamera gagal.", "error");
-            });
-        }
-
-        function closeScannerCameraNasabah() {
-            if (html5QrCodeNasabah && html5QrCodeNasabah.isScanning) {
-                html5QrCodeNasabah.stop().then(() => closeModal('scannerModal')).catch(() => closeModal('scannerModal'));
-            } else {
-                closeModal('scannerModal');
-            }
-        }
-
-        function handleSuccessfulScanNasabah(scannedText) {
-            let cleanId = scannedText.trim();
-            if (cleanId.includes('NSB-')) cleanId = cleanId.split('NSB-')[1];
-            document.getElementById('tfTargetId').value = cleanId;
-            lookupTargetNasabah(cleanId);
-            closeScannerCameraNasabah();
-            showToast(`QR Terbaca: NSB-${cleanId}`, 'success');
-        }
-
-        function toggleBalanceVisibility() {
-            if (!currentNasabah) return;
-            isBalanceHidden = !isBalanceHidden;
-            const display = document.getElementById('mainBalanceDisplay');
-            const eyeIcon = document.getElementById('eyeIcon');
-            if (isBalanceHidden) {
-                display.textContent = 'Rp ••••••••';
-                eyeIcon.className = 'fa-solid fa-eye-slash text-xs text-orange-400';
-            } else {
-                display.textContent = formatRupiah(currentNasabah.balance);
-                eyeIcon.className = 'fa-solid fa-eye text-xs';
-            }
-        }
-
-        function updateBalanceUI() {
-            if (!currentNasabah) return;
-            if (!isBalanceHidden) {
-                document.getElementById('mainBalanceDisplay').textContent = formatRupiah(currentNasabah.balance);
-            }
-        }
-
-        function renderLargeBroadcastCarousel() {
-            const container = document.getElementById('largeBroadcastCarousel');
-            if (!container) return;
-            if (broadcastBanners.length === 0) {
-                container.innerHTML = `<div class="p-6 text-center text-xs text-slate-500">Belum ada pengumuman broadcast dari admin.</div>`;
-                return;
-            }
-            if (activeBannerIdx >= broadcastBanners.length) activeBannerIdx = 0;
-
-            const b = broadcastBanners[activeBannerIdx];
-            container.innerHTML = `
-                <div class="p-5 bg-gradient-to-br ${b.theme} border rounded-3xl transition-all duration-700 animate-card flex flex-col justify-between min-h-[155px]">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="px-2.5 py-1 rounded-lg bg-black/50 text-[10px] font-extrabold tracking-wider text-orange-300 uppercase border border-orange-400/30">${b.badge}</span>
-                        <div class="flex items-center space-x-1">
-                            ${broadcastBanners.map((_, i) => `<span class="w-1.5 h-1.5 rounded-full ${i === activeBannerIdx ? 'bg-orange-400 w-4' : 'bg-slate-600'} transition-all duration-300"></span>`).join('')}
-                        </div>
-                    </div>
-                    <div class="space-y-1 my-1">
-                        <h4 class="text-sm sm:text-base font-extrabold text-white leading-snug">${b.title}</h4>
-                        <p class="text-xs text-slate-300 line-clamp-2">${b.desc}</p>
-                    </div>
-                    <div class="pt-2 border-t border-white/10 flex justify-between items-center text-[10px] text-slate-400">
-                        <span><i class="fa-solid fa-bullhorn mr-1 text-orange-400"></i>Broadcast Bini Syariah</span>
-                        <span class="text-orange-400 font-semibold">${activeBannerIdx + 1} / ${broadcastBanners.length}</span>
-                    </div>
-                </div>
-            `;
-        }
-
-        async function fetchNasabahData() {
-            const syncDot = document.getElementById('syncDot');
-            syncDot.className = 'w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping';
-
-            try {
-                const response = await fetch(`${SCRIPT_URL}?action=getAllData`);
-                const result = await response.json();
-
-                if (result.status === 'success') {
-                    allNasabahData = (result.nasabah || []).map(row => ({
-                        id: String(row.ID_Nasabah),
-                        name: String(row.Nama),
-                        address: String(row.Alamat),
-                        phone: String(row.Telepon_WA),
-                        pin: String(row.PIN),
-                        acc: String(row.No_Rekening),
-                        balance: Number(row.Saldo || 0)
-                    }));
-
-                    nasabahMutasi = (result.mutasi || []).map(row => ({
-                        id: String(row.No_Ref),
-                        nasabahId: String(row.ID_Nasabah),
-                        custName: String(row.Nama_Nasabah),
-                        type: String(row.Jenis).toUpperCase(),
-                        amount: Number(row.Nominal || 0),
-                        date: String(row.Tanggal),
-                        timestamp: Number(row.Timestamp || 0),
-                        note: String(row.Keterangan || '-')
-                    })).sort((a, b) => b.timestamp - a.timestamp);
-
-                    broadcastBanners = (result.broadcast || []).map(row => ({
-                        id: String(row.ID_Slide),
-                        badge: String(row.Badge),
-                        title: String(row.Judul),
-                        desc: String(row.Deskripsi),
-                        theme: String(row.Tema)
-                    }));
-
-                    currentNasabah = allNasabahData.find(n => n.id === sessionNasabahId);
-
-                    if (currentNasabah) {
-                        applyNasabahToUI();
-                        renderLargeBroadcastCarousel();
-                        syncDot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400';
-
-                        if (typeof window.initFirebaseWebToken === 'function') {
-                            window.initFirebaseWebToken(currentNasabah.id);
-                        }
-                    } else {
-                        showToast('Akun tidak ditemukan di database.', 'error');
-                        sessionStorage.removeItem('nusa_nasabah_session');
-                        setTimeout(() => window.location.href = 'index.html', 1200);
-                    }
-                }
-            } catch (err) {
-                syncDot.className = 'w-1.5 h-1.5 rounded-full bg-rose-500';
-                showToast('Gagal memuat data server.', 'error');
-            }
-        }
-
-        // AUTO-SYNC SALDO & MUTASI SECARA REAL-TIME DI LATAR BELAKANG (TIAP 5 DETIK)
-        setInterval(async () => {
-            const transferModalHidden = document.getElementById('transferModal').classList.contains('hidden');
-            const scannerModalHidden = document.getElementById('scannerModal').classList.contains('hidden');
-            
-            if (sessionNasabahId && transferModalHidden && scannerModalHidden) {
-                try {
-                    const response = await fetch(`${SCRIPT_URL}?action=getAllData`);
-                    const result = await response.json();
-                    if (result.status === 'success') {
-                        const freshNasabahList = (result.nasabah || []).map(row => ({
-                            id: String(row.ID_Nasabah),
-                            name: String(row.Nama),
-                            balance: Number(row.Saldo || 0)
-                        }));
-                        const updated = freshNasabahList.find(n => n.id === sessionNasabahId);
-                        if (updated && currentNasabah && updated.balance !== currentNasabah.balance) {
-                            currentNasabah.balance = updated.balance;
-                            updateBalanceUI();
-                            showToast('Saldo rekening Anda telah diperbarui oleh Admin!', 'success');
-                            speakNotification('Saldo rekening Anda telah diperbarui');
-                        }
-                    }
-                } catch(e) {}
-            }
-        }, 5000);
-
-        function applyNasabahToUI() {
-            if (!currentNasabah) return;
-            document.getElementById('headerNasabahName').textContent = currentNasabah.name;
-            document.getElementById('drawerName').textContent = currentNasabah.name;
-            document.getElementById('drawerId').textContent = `${currentNasabah.id} • Nasabah Aktif`;
-            document.getElementById('accountNumberText').textContent = currentNasabah.acc || '-';
-            document.getElementById('nasabahIdBadge').textContent = currentNasabah.id;
-            document.getElementById('drawerAvatar').textContent = currentNasabah.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
-
-            updateBalanceUI();
-            renderRecentTransactions();
-        }
-
-        function lookupTargetNasabah(val) {
-            const fullId = normalizeCustomerId(val);
-            const label = document.getElementById('targetLookupName');
-            if (!fullId) {
-                label.textContent = 'Ketik ID tujuan untuk melihat nama penerima';
-                label.className = 'text-[11px] text-slate-400 mt-1.5 font-medium';
-                return;
-            }
-            if (currentNasabah && fullId === currentNasabah.id) {
-                label.textContent = 'Tidak dapat transfer ke akun sendiri';
-                label.className = 'text-[11px] text-rose-400 mt-1.5 font-semibold';
-                return;
-            }
-            const found = allNasabahData.find(c => c.id === fullId);
-            if (found) {
-                label.textContent = `Penerima: ${found.name} (${found.acc})`;
-                label.className = 'text-[11px] text-emerald-400 mt-1.5 font-bold';
-            } else {
-                label.textContent = `ID ${fullId} tidak ditemukan di database`;
-                label.className = 'text-[11px] text-rose-400 mt-1.5 font-semibold';
-            }
-        }
-
-        async function handleTransferSubmit(e) {
-            e.preventDefault();
-            if (!currentNasabah) return;
-
-            const targetId = normalizeCustomerId(document.getElementById('tfTargetId').value);
-            const amount = Number(document.getElementById('tfAmount').value);
-            const note = document.getElementById('tfNote').value.trim();
-            const pin = document.getElementById('tfPin').value.trim();
-
-            if (targetId === currentNasabah.id) {
-                showToast('Tidak dapat transfer ke rekening sendiri.', 'error');
-                return;
-            }
-
-            const targetContact = allNasabahData.find(c => c.id === targetId);
-            if (!targetContact) {
-                showToast(`Rekening tujuan ${targetId} tidak ditemukan!`, 'error');
-                return;
-            }
-
-            if (String(pin) !== String(currentNasabah.pin)) {
-                showToast('PIN Transaksi Anda salah!', 'error');
-                return;
-            }
-
-            if (amount > currentNasabah.balance) {
-                showToast('Saldo rekening tidak mencukupi.', 'error');
-                return;
-            }
-
-            const btn = document.getElementById('submitTfBtn');
-            btn.disabled = true;
-            btn.textContent = 'Memproses Transfer...';
-
-            const now = new Date();
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-            const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-            const refCode = 'TRF-' + Date.now().toString().slice(-8);
-
-            const txPayload = {
-                senderId: currentNasabah.id,
-                senderName: currentNasabah.name,
-                receiverId: targetContact.id,
-                receiverName: targetContact.name,
-                amount: amount,
-                refCode: refCode,
-                date: dateStr,
-                month: String(now.getMonth() + 1).padStart(2, '0'),
-                year: String(now.getFullYear()),
-                timestamp: Math.floor(Date.now() / 1000),
-                note: note || 'Transfer Antar Rekening'
-            };
-
-            try {
-                const res = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'processTransfer', data: txPayload })
-                });
-                const result = await res.json();
-
-                if (result.status === 'success') {
-                    await fetchNasabahData();
-
-                    const terbilangStr = terbilangLuwes(amount);
-                    speakNotification(`Transfer keluar sebesar ${terbilangStr} berhasil`);
-
-                    pendingReceiptData = {
-                        id: refCode,
-                        date: dateStr,
-                        amount: amount,
-                        note: txPayload.note,
-                        targetName: `${targetContact.name} (${targetId})`,
-                        targetPhone: targetContact.phone,
-                        finalBalance: result.senderFinalBalance
-                    };
-
-                    document.getElementById('rcpAmount').textContent = formatRupiah(amount);
-                    document.getElementById('rcpDate').textContent = dateStr;
-                    document.getElementById('rcpRef').textContent = refCode;
-                    document.getElementById('rcpTargetName').textContent = `${targetContact.name} (${targetId})`;
-                    document.getElementById('rcpNote').textContent = txPayload.note;
-                    document.getElementById('rcpFinalBalance').textContent = formatRupiah(result.senderFinalBalance);
-
-                    closeModal('transferModal');
-                    openModal('receiptModal');
-                    e.target.reset();
-                    document.getElementById('targetLookupName').textContent = 'Ketik ID tujuan untuk melihat nama penerima';
-                } else {
-                    showToast(result.message || 'Transfer gagal.', 'error');
-                }
-            } catch (err) {
-                showToast('Gagal terhubung ke Google Sheets.', 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Kirim Transfer Sekarang';
-            }
-        }
-
-        function confirmSendWhatsApp(isYes) {
-            if (isYes && pendingReceiptData) {
-                const tx = pendingReceiptData;
-                try {
-                    const { jsPDF } = window.jspdf;
-                    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [80, 130] });
-
-                    doc.setFont("Helvetica", "bold");
-                    doc.setFontSize(11);
-                    doc.text("BINI SYARIAH - BUKTI TRANSFER", 40, 10, { align: "center" });
-                    
-                    doc.setFontSize(8);
-                    doc.setFont("Helvetica", "normal");
-                    doc.text("-------------------------------------------------------------", 40, 15, { align: "center" });
-                    doc.text(`Ref: ${tx.id}`, 8, 22);
-                    doc.text(`Tanggal: ${tx.date}`, 8, 28);
-                    doc.text(`Pengirim: ${currentNasabah.name} (${currentNasabah.id})`, 8, 34);
-                    doc.text(`Penerima: ${tx.targetName}`, 8, 40);
-                    doc.text(`Catatan: ${tx.note}`, 8, 46);
-
-                    doc.text("-------------------------------------------------------------", 40, 53, { align: "center" });
-                    doc.setFont("Helvetica", "bold");
-                    doc.setFontSize(10);
-                    doc.text(`Nominal: ${formatRupiah(tx.amount)}`, 8, 61);
-                    doc.setFontSize(8);
-                    doc.setFont("Helvetica", "normal");
-                    doc.text(`Sisa Saldo: ${formatRupiah(tx.finalBalance)}`, 8, 68);
-
-                    doc.text("-------------------------------------------------------------", 40, 75, { align: "center" });
-                    doc.text("Transaksi Berhasil & Sah", 40, 82, { align: "center" });
-
-                    doc.save(`Struk_Transfer_${tx.id}.pdf`);
-
-                    let phoneFormatted = String(tx.targetPhone || '').trim();
-                    if (phoneFormatted.startsWith('0')) phoneFormatted = '62' + phoneFormatted.slice(1);
-
-                    const waMessage = encodeURIComponent(`Halo *${tx.targetName.split(' ')[0]}*, Anda telah menerima dana transfer sebesar *${formatRupiah(tx.amount)}* dari *${currentNasabah.name}* (Ref: ${tx.id}). Pesan: "${tx.note}". File PDF struk terlampir.`);
-                    window.open(`https://wa.me/${phoneFormatted}?text=${waMessage}`, '_blank');
-
-                    showToast('Struk PDF diunduh & WhatsApp dibuka!', 'success');
-                } catch (err) {
-                    showToast('Gagal men-generate PDF.', 'error');
-                }
-            } else {
-                showToast('Transaksi selesai disimpan.', 'info');
-            }
-            closeModal('receiptModal');
-            pendingReceiptData = null;
-        }
-
-        function renderRecentTransactions() {
-            const container = document.getElementById('recentTransactionsList');
-            container.innerHTML = '';
-            if (!currentNasabah) return;
-            const userTx = nasabahMutasi.filter(t => t.nasabahId === currentNasabah.id);
-            
-            if (userTx.length === 0) {
-                container.innerHTML = `<p class="text-[11px] text-slate-500 text-center py-2">Belum ada riwayat transaksi</p>`;
-                return;
-            }
-
-            userTx.slice(0, 3).forEach(tx => {
-                const isCredit = tx.type === 'SETOR' || tx.type === 'KREDIT';
-                const item = document.createElement('div');
-                item.className = 'flex items-center justify-between p-3.5 rounded-2xl bg-slate-800/40 border border-slate-800/90 text-xs';
-                item.innerHTML = `
-                    <div class="flex items-center space-x-3 min-w-0">
-                        <div class="w-9 h-9 shrink-0 rounded-xl ${isCredit ? 'bg-orange-500/15 text-orange-400' : 'bg-rose-500/15 text-rose-400'} flex items-center justify-center">
-                            <i class="fa-solid ${isCredit ? 'fa-arrow-down-left' : 'fa-paper-plane'}"></i>
-                        </div>
-                        <div class="truncate">
-                            <h4 class="text-xs font-bold text-slate-100 truncate">${tx.note}</h4>
-                            <p class="text-[10px] text-slate-400 mt-0.5">${tx.date} • ${tx.id}</p>
-                        </div>
-                    </div>
-                    <span class="text-xs font-extrabold shrink-0 ml-2 ${isCredit ? 'text-orange-400' : 'text-rose-400'}">
-                        ${isCredit ? '+' : '-'}${formatRupiah(tx.amount)}
-                    </span>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        function renderFullHistory() {
-            const container = document.getElementById('fullHistoryList');
-            container.innerHTML = '';
-            if (!currentNasabah) return;
-            const userTx = nasabahMutasi.filter(t => t.nasabahId === currentNasabah.id);
-            document.getElementById('txCountBadge').textContent = `${userTx.length} Transaksi`;
-
-            if (userTx.length === 0) {
-                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Belum ada riwayat transaksi tercatat.</p>`;
-                return;
-            }
-
-            userTx.forEach(tx => {
-                const isCredit = tx.type === 'SETOR' || tx.type === 'KREDIT';
-                const item = document.createElement('div');
-                item.className = 'flex items-center justify-between p-3.5 rounded-2xl bg-slate-950 border border-slate-800 text-xs';
-                item.innerHTML = `
-                    <div class="flex items-center space-x-3 min-w-0">
-                        <div class="w-9 h-9 shrink-0 rounded-xl ${isCredit ? 'bg-orange-500/15 text-orange-400' : 'bg-rose-500/15 text-rose-400'} flex items-center justify-center">
-                            <i class="fa-solid ${isCredit ? 'fa-arrow-down-left' : 'fa-paper-plane'}"></i>
-                        </div>
-                        <div class="truncate">
-                            <h4 class="text-xs font-bold text-white truncate">${tx.note}</h4>
-                            <p class="text-[10px] text-slate-400">${tx.date} • Ref: ${tx.id}</p>
-                        </div>
-                    </div>
-                    <span class="text-xs font-extrabold shrink-0 ml-2 ${isCredit ? 'text-orange-400' : 'text-rose-400'}">
-                        ${isCredit ? '+' : '-'}${formatRupiah(tx.amount)}
-                    </span>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            const colors = {
-                success: 'bg-slate-900 border-orange-500/60 text-orange-300',
-                error: 'bg-slate-900 border-rose-500/60 text-rose-300',
-                warning: 'bg-slate-900 border-amber-500/60 text-amber-300',
-                info: 'bg-slate-900 border-sky-500/60 text-sky-300'
-            };
-            toast.className = `${colors[type]} border px-4 py-3 rounded-2xl shadow-2xl flex items-center space-x-2.5 text-xs font-medium backdrop-blur-md transition-all duration-300`;
-            toast.innerHTML = `<i class="fa-solid fa-circle-info"></i><span>${message}</span>`;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            fetchNasabahData();
-
-            setInterval(() => {
-                if (broadcastBanners.length > 0) {
-                    activeBannerIdx = (activeBannerIdx + 1) % broadcastBanners.length;
-                    renderLargeBroadcastCarousel();
-                }
-            }, 5000);
-        });
-</script></html>
+  const sessionNasabahId = sessionStorage.getItem('nusa_nasabah_session');
+  if (!sessionNasabahId) window.location.href = 'index.html';
+
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwu0kGhiGxqD1wH5MeqWxIDMfep_SsTLYkpYMnjwzGJNu2kUPAW8T83SL2C1t52CH9r/exec";
+
+  let currentNasabah = null;
+  let allNasabahData = [];
+  let nasabahMutasi = [];
+  let broadcastBanners = [];
+  let activeBannerIdx = 0;
+  let isBalanceHidden = false;
+  let pendingReceiptData = null;
+  let html5QrCodeNasabah = null;
+  let qrCodeInstance = null;
+  let lastKnownBalance = 0;
+
+  // --- PEMBACA SUARA LUWES (TERBILANG) ---
+  function terbilang(nominal) {
+      const angka = Math.abs(Number(nominal));
+      if (isNaN(angka) || angka === 0) return "nol rupiah";
+      const huruf = ["", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas"];
+      let res = "";
+      if (angka < 12) res = huruf[angka];
+      else if (angka < 20) res = terbilang(angka - 10) + " belas";
+      else if (angka < 100) res = terbilang(Math.floor(angka / 10)) + " puluh " + terbilang(angka % 10);
+      else if (angka < 200) res = "seratus " + terbilang(angka - 100);
+      else if (angka < 1000) res = terbilang(Math.floor(angka / 100)) + " ratus " + terbilang(angka % 100);
+      else if (angka < 2000) res = "seribu " + terbilang(angka - 1000);
+      else if (angka < 1000000) res = terbilang(Math.floor(angka / 1000)) + " ribu " + terbilang(angka % 1000);
+      else if (angka < 1000000000) res = terbilang(Math.floor(angka / 1000000)) + " juta " + terbilang(angka % 1000000);
+      else if (angka < 1000000000000) res = terbilang(Math.floor(angka / 1000000000)) + " miliar " + terbilang(angka % 1000000000);
+      return res.replace(/\s+/g, ' ').trim();
+  }
+
+  function putarSuaraNasabah(pesanTeks, nominalUang = null) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      let teksLengkap = pesanTeks;
+      if (nominalUang !== null && !isNaN(nominalUang)) teksLengkap += ", sebesar " + terbilang(nominalUang) + " rupiah";
+      const utterance = new SpeechSynthesisUtterance(teksLengkap);
+      utterance.lang = 'id-ID';
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      const voices = window.speechSynthesis.getVoices();
+      const idVoice = voices.find(v => v.lang === 'id-ID' || v.lang === 'id_ID');
+      if (idVoice) utterance.voice = idVoice;
+      window.speechSynthesis.speak(utterance);
+  }
+
+  function openMyQrCode() {
+      if (!currentNasabah) return;
+      openModal('myQrModal');
+      document.getElementById('qrModalName').textContent = currentNasabah.name;
+      document.getElementById('qrModalId').textContent = `${currentNasabah.id} • ${currentNasabah.acc}`;
+      const container = document.getElementById('qrcodeContainer');
+      container.innerHTML = '';
+      qrCodeInstance = new QRCode(container, { text: currentNasabah.id, width: 160, height: 160, colorDark: "#020617", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
+  }
+
+  function formatRupiah(num) { return 'Rp ' + Number(num || 0).toLocaleString('id-ID'); }
+  function normalizeCustomerId(rawInput) {
+      let clean = String(rawInput || '').trim().toUpperCase();
+      if (clean.startsWith('NSB-')) clean = clean.replace('NSB-', '');
+      return clean ? 'NSB-' + clean : '';
+  }
+
+  function toggleDrawer(show) {
+      const drawer = document.getElementById('navDrawer');
+      const backdrop = document.getElementById('drawerBackdrop');
+      if (show) { backdrop.classList.remove('hidden'); setTimeout(() => backdrop.classList.remove('opacity-0'), 10); drawer.classList.remove('-translate-x-full'); }
+      else { drawer.classList.add('-translate-x-full'); backdrop.classList.add('opacity-0'); setTimeout(() => backdrop.classList.add('hidden'), 300); }
+  }
+
+  function handleLogout() {
+      sessionStorage.removeItem('nusa_nasabah_session');
+      showToast('Keluar dari sesi...', 'warning');
+      setTimeout(() => { window.location.href = 'index.html'; }, 700);
+  }
+
+  function switchTab(tabName) {
+      ['beranda', 'riwayat'].forEach(t => {
+          document.getElementById('tab-' + t).classList.add('hidden');
+          document.getElementById('nav-' + t).className = 'flex flex-col items-center text-slate-400 hover:text-orange-400 transition';
+      });
+      document.getElementById('tab-' + tabName).classList.remove('hidden');
+      document.getElementById('nav-' + tabName).className = 'flex flex-col items-center text-orange-400 transition';
+      if (tabName === 'riwayat') renderFullHistory();
+  }
+
+  function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+  function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+  function openScannerCameraNasabah() {
+      openModal('scannerModal');
+      if (!html5QrCodeNasabah) html5QrCodeNasabah = new Html5Qrcode("readerNasabah");
+      html5QrCodeNasabah.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 240, height: 240 } }, (txt) => {
+          let clean = txt.trim();
+          if (clean.includes('NSB-')) clean = clean.split('NSB-')[1];
+          document.getElementById('tfTargetId').value = clean;
+          lookupTargetNasabah(clean);
+          closeScannerCameraNasabah();
+      }, () => {}).catch(() => {});
+  }
+
+  function closeScannerCameraNasabah() {
+      if (html5QrCodeNasabah && html5QrCodeNasabah.isScanning) {
+          html5QrCodeNasabah.stop().then(() => closeModal('scannerModal')).catch(() => closeModal('scannerModal'));
+      } else { closeModal('scannerModal'); }
+  }
+
+  function toggleBalanceVisibility() {
+      if (!currentNasabah) return;
+      isBalanceHidden = !isBalanceHidden;
+      const display = document.getElementById('mainBalanceDisplay');
+      const eyeIcon = document.getElementById('eyeIcon');
+      if (isBalanceHidden) { display.textContent = 'Rp ••••••••'; eyeIcon.className = 'fa-solid fa-eye-slash text-xs text-orange-400'; }
+      else { display.textContent = formatRupiah(currentNasabah.balance); eyeIcon.className = 'fa-solid fa-eye text-xs'; }
+  }
+
+  function updateBalanceUI() {
+      if (!currentNasabah) return;
+      if (!isBalanceHidden) document.getElementById('mainBalanceDisplay').textContent = formatRupiah(currentNasabah.balance);
+  }
+
+  function renderLargeBroadcastCarousel() {
+      const container = document.getElementById('largeBroadcastCarousel');
+      if (!container) return;
+      if (broadcastBanners.length === 0) { container.innerHTML = `<div class="p-6 text-center text-xs text-slate-500">Belum ada pengumuman broadcast.</div>`; return; }
+      if (activeBannerIdx >= broadcastBanners.length) activeBannerIdx = 0;
+      const b = broadcastBanners[activeBannerIdx];
+      let buttonsHTML = '';
+      let activeBtns = 0;
+      if (b.btn1Label) activeBtns++; if (b.btn2Label) activeBtns++; if (b.btn3Label) activeBtns++;
+      if (activeBtns > 0) {
+          buttonsHTML += `<div class="grid grid-cols-${activeBtns} gap-2 mt-3">`;
+          if (b.btn1Label) buttonsHTML += `<a href="${b.btn1Url || '#'}" target="_blank" class="py-2 px-3 rounded-xl bg-orange-600 text-white font-bold text-[10px] text-center truncate">${b.btn1Label}</a>`;
+          if (b.btn2Label) buttonsHTML += `<a href="${b.btn2Url || '#'}" target="_blank" class="py-2 px-3 rounded-xl bg-emerald-600 text-white font-bold text-[10px] text-center truncate">${b.btn2Label}</a>`;
+          if (b.btn3Label) buttonsHTML += `<a href="${b.btn3Url || '#'}" target="_blank" class="py-2 px-3 rounded-xl bg-sky-600 text-white font-bold text-[10px] text-center truncate">${b.btn3Label}</a>`;
+          buttonsHTML += `</div>`;
+      }
+      container.innerHTML = `
+          <div class="p-5 bg-gradient-to-br ${b.theme} border rounded-3xl transition-all duration-700 animate-card flex flex-col justify-between min-h-[155px]">
+              <div class="flex justify-between items-center mb-2"><span class="px-2.5 py-1 rounded-lg bg-black/50 text-[10px] font-extrabold text-orange-300 uppercase border border-orange-400/30">${b.badge}</span></div>
+              <div class="space-y-1 my-1"><h4 class="text-sm sm:text-base font-extrabold text-white">${b.title}</h4><p class="text-xs text-slate-300 line-clamp-3">${b.desc}</p>${buttonsHTML}</div>
+          </div>`;
+  }
+
+  async function fetchNasabahData() {
+      const syncDot = document.getElementById('syncDot');
+      syncDot.className = 'w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse';
+      try {
+          const response = await fetch(`${SCRIPT_URL}?action=getAllData`);
+          const result = await response.json();
+          if (result.status === 'success') {
+              allNasabahData = (result.nasabah || []).map(row => ({
+                  id: String(row.ID_Nasabah), name: String(row.Nama), address: String(row.Alamat),
+                  phone: String(row.Telepon_WA), pin: String(row.PIN), acc: String(row.No_Rekening), balance: Number(row.Saldo || 0)
+              }));
+              nasabahMutasi = (result.mutasi || []).map(row => ({
+                  id: String(row.No_Ref), nasabahId: String(row.ID_Nasabah), custName: String(row.Nama_Nasabah),
+                  type: String(row.Jenis).toUpperCase(), amount: Number(row.Nominal || 0), date: String(row.Tanggal), timestamp: Number(row.Timestamp || 0), note: String(row.Keterangan || '-')
+              })).sort((a, b) => b.timestamp - a.timestamp);
+              broadcastBanners = (result.broadcast || []).map(row => ({
+                  id: String(row.ID_Slide), badge: String(row.Badge), title: String(row.Judul), desc: String(row.Deskripsi), theme: String(row.Tema),
+                  btn1Label: String(row.Btn1_Label || ''), btn1Url: String(row.Btn1_Url || ''), btn2Label: String(row.Btn2_Label || ''), btn2Url: String(row.Btn2_Url || ''), btn3Label: String(row.Btn3_Label || ''), btn3Url: String(row.Btn3_Url || '')
+              }));
+
+              const freshNasabah = allNasabahData.find(n => n.id === sessionNasabahId);
+              if (freshNasabah) {
+                  if (lastKnownBalance > 0 && freshNasabah.balance !== lastKnownBalance) {
+                      let selisih = freshNasabah.balance - lastKnownBalance;
+                      if (selisih > 0) putarSuaraNasabah("Saldo masuk", selisih);
+                      else putarSuaraNasabah("Anda telah melakukan tarik tunai", Math.abs(selisih));
+                  }
+                  lastKnownBalance = freshNasabah.balance;
+                  currentNasabah = freshNasabah;
+                  applyNasabahToUI();
+                  renderLargeBroadcastCarousel();
+                  syncDot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400';
+              }
+          }
+      } catch (err) { syncDot.className = 'w-1.5 h-1.5 rounded-full bg-rose-500'; }
+  }
+
+  setInterval(() => {
+      if (document.getElementById('transferModal').classList.contains('hidden') && document.getElementById('scannerModal').classList.contains('hidden')) {
+          fetchNasabahData();
+      }
+  }, 5000);
+
+  function applyNasabahToUI() {
+      if (!currentNasabah) return;
+      document.getElementById('headerNasabahName').textContent = currentNasabah.name;
+      document.getElementById('drawerName').textContent = currentNasabah.name;
+      document.getElementById('drawerId').textContent = `${currentNasabah.id} • Nasabah Aktif`;
+      document.getElementById('accountNumberText').textContent = currentNasabah.acc || '-';
+      document.getElementById('nasabahIdBadge').textContent = currentNasabah.id;
+      document.getElementById('drawerAvatar').textContent = currentNasabah.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
+      updateBalanceUI();
+      renderRecentTransactions();
+  }
+
+  function lookupTargetNasabah(val) {
+      const fullId = normalizeCustomerId(val);
+      const label = document.getElementById('targetLookupName');
+      if (!fullId) { label.textContent = 'Ketik ID tujuan'; label.className = 'text-[11px] text-slate-400 mt-1.5 font-medium'; return; }
+      if (currentNasabah && fullId === currentNasabah.id) { label.textContent = 'Tidak dapat transfer ke akun sendiri'; label.className = 'text-[11px] text-rose-400 mt-1.5 font-semibold'; return; }
+      const found = allNasabahData.find(c => c.id === fullId);
+      if (found) { label.textContent = `Penerima: ${found.name} (${found.acc})`; label.className = 'text-[11px] text-emerald-400 mt-1.5 font-bold'; }
+      else { label.textContent = `ID ${fullId} tidak ditemukan`; label.className = 'text-[11px] text-rose-400 mt-1.5 font-semibold'; }
+  }
+
+  async function handleTransferSubmit(e) {
+      e.preventDefault();
+      if (!currentNasabah) return;
+      const targetId = normalizeCustomerId(document.getElementById('tfTargetId').value);
+      const amount = Number(document.getElementById('tfAmount').value);
+      const note = document.getElementById('tfNote').value.trim();
+      const pin = document.getElementById('tfPin').value.trim();
+
+      if (targetId === currentNasabah.id) { showToast('Tidak dapat transfer ke rekening sendiri.', 'error'); return; }
+      const targetContact = allNasabahData.find(c => c.id === targetId);
+      if (!targetContact) { showToast('Rekening tujuan tidak ditemukan!', 'error'); return; }
+      if (String(pin) !== String(currentNasabah.pin)) { showToast('PIN Transaksi salah!', 'error'); putarSuaraNasabah("PIN transaksi salah"); return; }
+      if (amount > currentNasabah.balance) { showToast('Saldo tidak mencukupi.', 'error'); putarSuaraNasabah("Saldo tidak mencukupi"); return; }
+
+      const btn = document.getElementById('submitTfBtn');
+      btn.disabled = true; btn.textContent = 'Memproses Transfer...';
+
+      const now = new Date();
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+      const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+      const refCode = 'TRF-' + Date.now().toString().slice(-8);
+
+      try {
+          const res = await fetch(SCRIPT_URL, {
+              method: 'POST',
+              body: JSON.stringify({
+                  action: 'processTransfer',
+                  data: { senderId: currentNasabah.id, senderName: currentNasabah.name, receiverId: targetContact.id, receiverName: targetContact.name, amount, refCode, date: dateStr, timestamp: Math.floor(Date.now() / 1000), note: note || 'Transfer P2P' }
+              })
+          });
+          const result = await res.json();
+          if (result.status === 'success') {
+              putarSuaraNasabah("Transaksi berhasil", amount);
+              await fetchNasabahData();
+              pendingReceiptData = { id: refCode, date: dateStr, amount, note: note || 'Transfer P2P', targetName: `${targetContact.name} (${targetId})`, targetPhone: targetContact.phone, finalBalance: result.senderFinalBalance };
+              
+              document.getElementById('rcpAmount').textContent = formatRupiah(amount);
+              document.getElementById('rcpDate').textContent = dateStr;
+              document.getElementById('rcpRef').textContent = refCode;
+              document.getElementById('rcpTargetName').textContent = `${targetContact.name} (${targetId})`;
+              document.getElementById('rcpNote').textContent = note || '-';
+              document.getElementById('rcpFinalBalance').textContent = formatRupiah(result.senderFinalBalance);
+
+              closeModal('transferModal');
+              openModal('receiptModal');
+              e.target.reset();
+          } else { showToast(result.message || 'Transfer gagal.', 'error'); putarSuaraNasabah("Transfer gagal"); }
+      } catch (err) { showToast('Gagal terhubung ke server.', 'error'); }
+      finally { btn.disabled = false; btn.textContent = 'Kirim Transfer Sekarang'; }
+  }
+
+  function confirmSendWhatsApp(isYes) {
+      if (isYes && pendingReceiptData) {
+          const tx = pendingReceiptData;
+          try {
+              let phoneFormatted = String(tx.targetPhone || '').trim();
+              if (phoneFormatted.startsWith('0')) phoneFormatted = '62' + phoneFormatted.slice(1);
+              const waMessage = encodeURIComponent(`Halo *${tx.targetName.split(' ')[0]}*, dana transfer sebesar *${formatRupiah(tx.amount)}* telah diterima dari *${currentNasabah.name}* (Ref: ${tx.id}).`);
+              window.open(`https://wa.me/${phoneFormatted}?text=${waMessage}`, '_blank');
+              showToast('WhatsApp dibuka!', 'success');
+          } catch(e) {}
+      }
+      closeModal('receiptModal');
+      pendingReceiptData = null;
+  }
+
+  function renderRecentTransactions() {
+      const container = document.getElementById('recentTransactionsList');
+      container.innerHTML = '';
+      if (!currentNasabah) return;
+      const userTx = nasabahMutasi.filter(t => t.nasabahId === currentNasabah.id);
+      if (userTx.length === 0) { container.innerHTML = `<p class="text-[11px] text-slate-500 text-center py-2">Belum ada mutasi</p>`; return; }
+      userTx.slice(0, 3).forEach(tx => {
+          const isCredit = tx.type.includes('SETOR') || tx.type.includes('KREDIT');
+          const item = document.createElement('div');
+          item.className = 'flex items-center justify-between p-3.5 rounded-2xl bg-slate-800/40 border border-slate-800 text-xs';
+          item.innerHTML = `<div class="flex items-center space-x-3"><div class="w-9 h-9 rounded-xl ${isCredit ? 'bg-orange-500/15 text-orange-400' : 'bg-rose-500/15 text-rose-400'} flex items-center justify-center"><i class="fa-solid ${isCredit ? 'fa-arrow-down-left' : 'fa-paper-plane'}"></i></div><div><h4 class="font-bold text-white">${tx.note}</h4><p class="text-[10px] text-slate-400">${tx.date}</p></div></div><span class="font-extrabold ${isCredit ? 'text-orange-400' : 'text-rose-400'}">${isCredit ? '+' : '-'}${formatRupiah(tx.amount)}</span>`;
+          container.appendChild(item);
+      });
+  }
+
+  function renderFullHistory() {
+      const container = document.getElementById('fullHistoryList');
+      container.innerHTML = '';
+      if (!currentNasabah) return;
+      const userTx = nasabahMutasi.filter(t => t.nasabahId === currentNasabah.id);
+      document.getElementById('txCountBadge').textContent = `${userTx.length} Transaksi`;
+      if (userTx.length === 0) { container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Belum ada riwayat.</p>`; return; }
+      userTx.forEach(tx => {
+          const isCredit = tx.type.includes('SETOR') || tx.type.includes('KREDIT');
+          const item = document.createElement('div');
+          item.className = 'flex items-center justify-between p-3.5 rounded-2xl bg-slate-950 border border-slate-800 text-xs';
+          item.innerHTML = `<div class="flex items-center space-x-3"><div class="w-9 h-9 rounded-xl ${isCredit ? 'bg-orange-500/15 text-orange-400' : 'bg-rose-500/15 text-rose-400'} flex items-center justify-center"><i class="fa-solid ${isCredit ? 'fa-arrow-down-left' : 'fa-paper-plane'}"></i></div><div><h4 class="font-bold text-white">${tx.note}</h4><p class="text-[10px] text-slate-400">${tx.date} • Ref: ${tx.id}</p></div></div><span class="font-extrabold ${isCredit ? 'text-orange-400' : 'text-rose-400'}">${isCredit ? '+' : '-'}${formatRupiah(tx.amount)}</span>`;
+          container.appendChild(item);
+      });
+  }
+
+  function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      const colors = { success: 'border-orange-500 text-orange-300', error: 'border-rose-500 text-rose-300', warning: 'border-amber-500 text-amber-300', info: 'border-sky-500 text-sky-300' };
+      toast.className = `bg-slate-900 border ${colors[type]} px-4 py-3 rounded-2xl shadow-2xl flex items-center space-x-2.5 text-xs font-medium`;
+      toast.innerHTML = `<i class="fa-solid fa-circle-info"></i><span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+  }
+
+  window.addEventListener('DOMContentLoaded', () => {
+      fetchNasabahData().then(() => {
+          if (sessionNasabahId) registerFcmToken(sessionNasabahId);
+      });
+  });
+</script>
+</html>
