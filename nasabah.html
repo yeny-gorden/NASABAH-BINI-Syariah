@@ -1,584 +1,517 @@
 <!DOCTYPE html>
-<html lang="id" class="dark">
-
+<html lang="id">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>BINI Syariah - Tabungan Suami Kesayangan Mamah</title>
-
- <link rel="manifest" href="./manifest.json">
- <meta name="theme-color" content="#020617">
- <meta name="apple-mobile-web-app-capable" content="yes">
- <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
- <link rel="apple-touch-icon" href="./icon-192.png">
-
- <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
- <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
- <!-- FIREBASE SDK COMPAT (FCM) -->
- <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
- <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-messaging-compat.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Nasabah - BINI Syariah</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <!-- Konfigurasi PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#059669">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
-
-<body class="bg-slate-950 text-slate-100 antialiased selection:bg-orange-500 selection:text-white">
- <div class="max-w-md mx-auto min-h-screen bg-slate-900 shadow-2xl shadow-black/80 flex flex-col justify-between relative overflow-x-hidden border-x border-slate-800/80 pb-24">
-  <div id="drawerBackdrop" onclick="toggleDrawer(false)" class="fixed inset-0 bg-black/75 backdrop-blur-xs z-40 hidden transition-opacity duration-300 opacity-0"></div>
-  
-  <aside id="navDrawer" class="fixed top-0 left-0 bottom-0 w-72 max-w-[82vw] bg-slate-950 border-r border-slate-800 z-50 transform -translate-x-full transition-transform duration-300 ease-out flex flex-col justify-between">
-   <div>
-    <div class="p-6 bg-gradient-to-br from-slate-900 to-orange-950/60 border-b border-slate-800">
-     <div class="flex items-center justify-between mb-4">
-      <div class="flex items-center space-x-2.5">
-       <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white font-extrabold text-base tracking-tighter shadow-lg shadow-orange-500/30 border border-orange-400/40">69</div>
-       <div>
-        <span class="font-extrabold tracking-tight text-sm text-white block leading-tight">BINI <span class="text-orange-400">SYARIAH</span></span>
-        <span class="text-[9px] text-orange-300 font-semibold tracking-wider block uppercase">Suami Cari, Istri Menikmati</span>
-       </div>
-      </div>
-      <button onclick="toggleDrawer(false)" class="w-8 h-8 rounded-full bg-slate-800/80 text-slate-400 hover:text-white flex items-center justify-center transition"><i class="fa-solid fa-xmark"></i></button>
-     </div>
-     <div class="flex items-center space-x-3 mt-3">
-      <div id="drawerAvatar" class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500/20 to-amber-500/20 border border-orange-500/40 flex items-center justify-center font-bold text-orange-400 text-lg">--</div>
+<body class="bg-slate-950 text-slate-100 min-h-screen pb-24 font-sans px-4 py-6">
+  <div class="max-w-md mx-auto space-y-5">
+    <div class="bg-slate-900 border-2 border-slate-800 rounded-3xl p-5 flex justify-between items-center shadow-xl">
       <div>
-       <h3 id="drawerName" class="font-bold text-sm text-white">-</h3>
-       <p id="drawerId" class="text-[11px] text-orange-400 font-medium">-</p>
+        <span id="nasabahIdBadge" class="text-xs font-mono font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-xl border border-emerald-500/20">ID: -</span>
+        <h2 id="nasabahNama" class="text-lg font-black text-white mt-2">-</h2>
+        <p id="nasabahRekening" class="text-sm text-slate-300 font-mono mt-0.5">-</p>
       </div>
-     </div>
+      <button type="button" onclick="logoutNasabah()" class="w-12 h-12 rounded-2xl bg-red-500/20 hover:bg-red-500/30 text-red-400 flex items-center justify-center transition border border-red-500/30 cursor-pointer" title="Keluar">
+        <i class="fa-solid fa-power-off text-lg"></i>
+      </button>
     </div>
-    <nav class="p-4 space-y-1.5">
-     <button onclick="toggleDrawer(false); switchTab('beranda')" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-300 hover:bg-slate-900 hover:text-orange-400 transition text-left"><i class="fa-solid fa-house w-5 text-center text-orange-400"></i><span class="text-xs font-semibold">Beranda & Saldo</span></button>
-     <button onclick="toggleDrawer(false); openModal('transferModal')" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-300 hover:bg-slate-900 hover:text-orange-400 transition text-left"><i class="fa-solid fa-paper-plane w-5 text-center text-amber-400"></i><span class="text-xs font-semibold">Transfer Dana (012)</span></button>
-     <button onclick="toggleDrawer(false); openMyQrCode()" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-300 hover:bg-slate-900 hover:text-orange-400 transition text-left"><i class="fa-solid fa-qrcode w-5 text-center text-orange-400"></i><span class="text-xs font-semibold">QR Code Saya</span></button>
-     <button onclick="toggleDrawer(false); switchTab('riwayat')" class="w-full flex items-center space-x-3.5 px-4 py-3 rounded-2xl text-slate-300 hover:bg-slate-900 hover:text-orange-400 transition text-left"><i class="fa-solid fa-receipt w-5 text-center text-orange-300"></i><span class="text-xs font-semibold">Riwayat Transaksi</span></button>
-    </nav>
-   </div>
-   <div class="p-4 border-t border-slate-800/80">
-    <button onclick="handleLogout()" class="w-full flex items-center justify-center space-x-2 py-3 rounded-2xl bg-rose-500/15 border border-rose-500/40 text-rose-400 hover:bg-rose-500 hover:text-white transition text-xs font-bold active:scale-95"><i class="fa-solid fa-right-from-bracket"></i><span>Keluar (Logout)</span></button>
-   </div>
-  </aside>
 
-  <header class="p-5 pt-6 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-900">
-   <div class="flex justify-between items-center mb-5">
-    <div class="flex items-center space-x-3">
-     <button onclick="toggleDrawer(true)" class="w-10 h-10 rounded-2xl bg-slate-800/90 border border-slate-700/80 flex items-center justify-center text-slate-200 hover:border-orange-500/50 hover:text-orange-400 transition"><i class="fa-solid fa-bars-staggered text-base"></i></button>
-     <div class="flex items-center space-x-2.5">
-      <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white font-extrabold text-sm tracking-tighter shadow-md shadow-orange-500/30">69</div>
+    <div class="bg-gradient-to-br from-emerald-950 via-slate-900 to-slate-950 border-2 border-emerald-500/40 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+      <span class="text-xs font-bold uppercase tracking-wider text-emerald-300">Total Saldo Efektif</span>
+      <h1 id="nasabahSaldo" class="text-3xl font-black text-white mt-2 tracking-tight font-mono">Rp 0</h1>
+      <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center text-xs">
+        <span class="text-slate-300 font-semibold">Status Rekening</span>
+        <span class="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-black">AKTIF / AMAN</span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3">
+      <button type="button" onclick="openModal('transferModal')" class="p-4 rounded-3xl bg-emerald-600 hover:bg-emerald-500 flex flex-col items-center justify-center text-center gap-2 transition shadow-xl shadow-emerald-600/20 cursor-pointer">
+        <div class="w-12 h-12 rounded-2xl bg-white/20 text-white flex items-center justify-center text-lg"><i class="fa-solid fa-paper-plane"></i></div>
+        <span class="text-sm font-black text-white">Kirim Uang / Transfer</span>
+      </button>
+      <button type="button" onclick="openMyQRCode()" class="p-4 rounded-3xl bg-blue-600 hover:bg-blue-500 flex flex-col items-center justify-center text-center gap-2 transition shadow-xl shadow-blue-600/20 cursor-pointer">
+        <div class="w-12 h-12 rounded-2xl bg-white/20 text-white flex items-center justify-center text-lg"><i class="fa-solid fa-qrcode"></i></div>
+        <span class="text-sm font-black text-white">QR Rekening Saya</span>
+      </button>
+      <button type="button" onclick="openScanModal()" class="p-4 rounded-3xl bg-amber-600 hover:bg-amber-500 flex flex-col items-center justify-center text-center gap-2 transition shadow-xl shadow-amber-600/20 cursor-pointer">
+        <div class="w-12 h-12 rounded-2xl bg-white/20 text-white flex items-center justify-center text-lg"><i class="fa-solid fa-camera"></i></div>
+        <span class="text-sm font-black text-white">Scan Kamera QR</span>
+      </button>
+      <button type="button" onclick="fetchNasabahData()" class="p-4 rounded-3xl bg-slate-800 hover:bg-slate-700 flex flex-col items-center justify-center text-center gap-2 transition border-2 border-slate-700 cursor-pointer">
+        <div class="w-12 h-12 rounded-2xl bg-slate-700 text-slate-200 flex items-center justify-center text-lg"><i class="fa-solid fa-rotate"></i></div>
+        <span class="text-sm font-black text-slate-200">Muat Ulang Saldo</span>
+      </button>
+    </div>
+
+    <div class="space-y-3 pt-3">
+      <div class="flex justify-between items-center">
+        <h3 class="text-sm font-black uppercase tracking-wider text-slate-300">Riwayat Mutasi Transaksi</h3>
+        <span id="mutasiCount" class="text-xs font-mono text-emerald-400 font-bold bg-slate-900 px-3 py-1 rounded-xl border border-slate-800">0 Transaksi</span>
+      </div>
+      <div id="mutasiListContainer" class="space-y-2.5">
+        <p class="text-sm text-slate-400 text-center py-6">Memuat riwayat transaksi...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Ganti PIN Wajib -->
+  <div id="changePinModal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[80] hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border-2 border-amber-500 w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-4">
+      <div class="text-center space-y-2">
+        <div class="w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto text-2xl border border-amber-500/30">
+          <i class="fa-solid fa-lock"></i>
+        </div>
+        <h3 class="text-base font-black text-white">Wajib Ganti PIN Baru</h3>
+        <p class="text-xs text-slate-300 leading-relaxed">Akun Anda dibuatkan oleh petugas. Demi keamanan dana Anda, silakan buat PIN baru (6 angka).</p>
+      </div>
+      <form onsubmit="handleForceChangePin(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-200 mb-1.5">Masukkan PIN Baru (6 Angka)</label>
+          <input type="password" id="newPin1" required maxlength="6" inputmode="numeric" placeholder="••••••" class="w-full bg-slate-950 border-2 border-slate-700 rounded-2xl px-4 py-3.5 text-base text-white tracking-[0.5em] text-center font-bold focus:outline-none focus:border-amber-500">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-200 mb-1.5">Ulangi PIN Baru</label>
+          <input type="password" id="newPin2" required maxlength="6" inputmode="numeric" placeholder="••••••" class="w-full bg-slate-950 border-2 border-slate-700 rounded-2xl px-4 py-3.5 text-base text-white tracking-[0.5em] text-center font-bold focus:outline-none focus:border-amber-500">
+        </div>
+        <button type="submit" id="btnChangePin" class="w-full py-4 rounded-2xl bg-amber-600 hover:bg-amber-500 text-white font-black text-sm shadow-lg cursor-pointer">Simpan PIN Baru</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Transfer -->
+  <div id="transferModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border-2 border-slate-700 w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="text-base font-black text-white">Kirim Uang (Transfer)</h3>
+        <button type="button" onclick="closeModal('transferModal')" class="w-10 h-10 rounded-xl bg-slate-800 text-slate-300 hover:text-white flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark text-base"></i></button>
+      </div>
+      <form onsubmit="handleTransferSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-200 mb-1.5">No. HP / ID / Rekening Tujuan</label>
+          <div class="flex gap-2">
+            <input type="text" id="targetId" oninput="verifyTransferTarget()" required placeholder="0812... / NSB-002" class="w-full bg-slate-950 border-2 border-slate-700 rounded-2xl px-4 py-3 text-sm text-white font-mono focus:outline-none focus:border-emerald-500">
+            <button type="button" onclick="openScanModal()" class="px-4 py-3 bg-amber-600 hover:bg-amber-500 text-white rounded-2xl text-sm font-bold cursor-pointer" title="Scan"><i class="fa-solid fa-camera"></i></button>
+          </div>
+        </div>
+        <div id="transferTargetPreview" class="hidden bg-slate-950 p-4 rounded-2xl border-2 border-emerald-500/40 space-y-1.5 text-xs">
+          <div class="flex items-center gap-1.5 text-emerald-400 font-bold mb-1"><i class="fa-solid fa-circle-check"></i><span>Penerima Ditemukan:</span></div>
+          <p class="text-slate-300">Nama: <span id="tpNama" class="text-white font-bold text-sm">-</span></p>
+          <p class="text-slate-300">Alamat: <span id="tpAlamat" class="text-white">-</span></p>
+          <p class="text-slate-300">No. WA: <span id="tpTelepon" class="text-white font-mono">-</span></p>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-200 mb-1.5">Jumlah Nominal (Rp)</label>
+          <input type="number" id="transferAmount" required min="1000" placeholder="50000" class="w-full bg-slate-950 border-2 border-slate-700 rounded-2xl px-4 py-3.5 text-sm text-white font-mono focus:outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-200 mb-1.5">Catatan / Keterangan</label>
+          <input type="text" id="transferNote" placeholder="Contoh: Beli beras" class="w-full bg-slate-950 border-2 border-slate-700 rounded-2xl px-4 py-3.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-200 mb-1.5">PIN Anda (6 Angka)</label>
+          <input type="password" id="transferPin" required maxlength="6" inputmode="numeric" placeholder="••••••" class="w-full bg-slate-950 border-2 border-slate-700 rounded-2xl px-4 py-3.5 text-base text-white tracking-[0.5em] text-center font-bold focus:outline-none focus:border-emerald-500">
+        </div>
+        <div class="pt-2 flex gap-3">
+          <button type="button" onclick="closeModal('transferModal')" class="w-1/3 py-3.5 rounded-2xl bg-slate-800 text-slate-300 font-bold text-xs cursor-pointer">Batal</button>
+          <button type="submit" id="btnTransfer" class="w-2/3 py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm shadow-lg cursor-pointer">Kirim Uang Sekarang</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal QR Rekening Saya -->
+  <div id="myQrModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border-2 border-slate-700 w-full max-w-sm rounded-3xl p-6 shadow-2xl text-center space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="text-base font-black text-white">QR Rekening Saya</h3>
+        <button type="button" onclick="closeModal('myQrModal')" class="w-10 h-10 rounded-xl bg-slate-800 text-slate-300 flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="bg-white p-5 rounded-2xl inline-block mx-auto shadow-inner">
+        <img id="qrCodeImg" src="" alt="QR Code" class="w-48 h-48 mx-auto object-contain">
+      </div>
       <div>
-       <div class="flex items-center space-x-1.5"><span id="syncDot" class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span><span class="text-[10px] text-orange-400 font-bold uppercase tracking-wider">BINI SYARIAH</span></div>
-       <h1 id="headerNasabahName" class="text-xs font-bold text-white tracking-tight">Memuat...</h1>
+        <p id="qrNasabahName" class="text-sm font-black text-white">-</p>
+        <p id="qrNasabahAcc" class="text-xs text-slate-300 font-mono mt-1">-</p>
       </div>
-     </div>
+      <button type="button" onclick="closeModal('myQrModal')" class="w-full py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm cursor-pointer">Tutup</button>
     </div>
-    <div class="flex items-center space-x-2">
-     <button onclick="fetchNasabahData()" class="w-9 h-9 rounded-2xl bg-slate-800/80 border border-slate-700/70 flex items-center justify-center text-slate-300 hover:text-orange-400 transition"><i class="fa-solid fa-arrows-rotate text-xs"></i></button>
-     <button onclick="openMyQrCode()" class="w-9 h-9 rounded-2xl bg-orange-500/20 border border-orange-500/40 flex items-center justify-center text-orange-400 hover:bg-orange-500 hover:text-slate-950 transition"><i class="fa-solid fa-qrcode text-xs"></i></button>
-    </div>
-   </div>
-
-   <div class="nasabah-mesh p-5 rounded-3xl border border-orange-500/30 shadow-2xl relative overflow-hidden animate-card">
-    <div class="flex justify-between items-center mb-4">
-     <span class="px-2.5 py-1 rounded-lg bg-slate-950/70 border border-orange-500/30 text-[10px] font-bold tracking-wider text-orange-300 uppercase">Suami Cari, Istri Menikmati</span>
-     <button onclick="openMyQrCode()" class="px-2.5 py-1 rounded-xl bg-orange-500/20 text-orange-400 hover:bg-orange-500 hover:text-slate-950 font-bold text-[10px] transition flex items-center gap-1 border border-orange-500/30"><i class="fa-solid fa-qrcode"></i> QR Saya</button>
-    </div>
-    <div class="mb-4">
-     <div class="flex items-center space-x-2"><span class="text-xs text-slate-300 font-medium">Saldo Efektif</span><button onclick="toggleBalanceVisibility()" class="text-slate-300 hover:text-white transition p-1"><i id="eyeIcon" class="fa-solid fa-eye text-xs"></i></button></div>
-     <h2 id="mainBalanceDisplay" class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mt-1">Rp 0</h2>
-    </div>
-    <div class="pt-3.5 border-t border-white/10 flex justify-between items-center text-xs">
-     <div class="flex items-center space-x-2 bg-slate-950/50 px-3 py-1.5 rounded-xl border border-white/10"><span class="text-slate-400 text-[11px]">No. Rek:</span><strong id="accountNumberText" class="text-slate-100 font-mono tracking-wider text-xs">-</strong></div>
-     <span id="nasabahIdBadge" class="text-[10px] font-mono text-orange-300 font-bold bg-orange-400/10 px-2 py-1 rounded-lg">-</span>
-    </div>
-   </div>
-  </header>
-
-  <main class="px-5 flex-1 space-y-5 py-4">
-   <section id="tab-beranda" class="space-y-4 animate-card">
-    <div>
-     <div class="flex justify-between items-center mb-2"><h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Pengumuman & Informasi</h3><span class="w-2 h-2 rounded-full bg-orange-400 animate-ping"></span></div>
-     <div id="largeBroadcastCarousel" class="relative rounded-3xl overflow-hidden border border-orange-500/30 shadow-2xl bg-slate-950 min-h-[150px] flex flex-col justify-between"><div class="p-6 text-center text-xs text-slate-500">Memuat informasi broadcast...</div></div>
-    </div>
-    <div class="pt-2">
-     <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Menu Layanan</h3>
-     <div class="grid grid-cols-2 gap-3">
-      <button onclick="openModal('transferModal')" class="flex items-center space-x-3 p-4 rounded-2xl bg-slate-800/40 border border-slate-800 hover:border-orange-500/50 hover:bg-slate-800/80 transition active:scale-95 text-left"><div class="w-12 h-12 bg-orange-500/15 text-orange-400 rounded-2xl flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-paper-plane"></i></div><div><h4 class="text-xs font-bold text-white">Transfer (012)</h4><p class="text-[10px] text-slate-400 mt-0.5">Antar Rekening</p></div></button>
-      <button onclick="openMyQrCode()" class="flex items-center space-x-3 p-4 rounded-2xl bg-slate-800/40 border border-slate-800 hover:border-amber-500/50 hover:bg-slate-800/80 transition active:scale-95 text-left"><div class="w-12 h-12 bg-amber-500/15 text-amber-400 rounded-2xl flex items-center justify-center text-lg shrink-0"><i class="fa-solid fa-qrcode"></i></div><div><h4 class="text-xs font-bold text-white">QR Saya</h4><p class="text-[10px] text-slate-400 mt-0.5">Terima Setoran</p></div></button>
-     </div>
-    </div>
-    <div class="pt-2">
-     <div class="flex justify-between items-center mb-3"><h3 class="font-bold text-sm text-white">Mutasi Terakhir</h3><button onclick="switchTab('riwayat')" class="text-xs text-orange-400 font-semibold hover:underline">Lihat Semua</button></div>
-     <div id="recentTransactionsList" class="space-y-2"><p class="text-[11px] text-slate-500 text-center py-2">Memuat data mutasi...</p></div>
-    </div>
-   </section>
-
-   <section id="tab-riwayat" class="hidden space-y-4 animate-card">
-    <div class="flex justify-between items-center">
-     <div><h3 class="text-sm font-bold text-white">Riwayat Transaksi</h3><p class="text-[11px] text-slate-400">Seluruh aktivitas masuk dan keluar</p></div>
-     <span class="text-[11px] font-mono text-orange-400 font-bold bg-slate-800 px-2.5 py-1 rounded-xl border border-slate-700" id="txCountBadge">0 Transaksi</span>
-    </div>
-    <div id="fullHistoryList" class="space-y-2.5"></div>
-   </section>
-  </main>
-
-  <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-slate-950/95 backdrop-blur-md border-t border-slate-800/90 py-2.5 px-6 flex justify-around items-center z-30">
-   <button onclick="switchTab('beranda')" id="nav-beranda" class="flex flex-col items-center text-orange-400 transition"><i class="fa-solid fa-house text-base"></i><span class="text-[10px] mt-1 font-semibold">Beranda</span></button>
-   <button onclick="openModal('transferModal')" class="flex flex-col items-center text-slate-400 hover:text-orange-400 transition"><i class="fa-solid fa-paper-plane text-base"></i><span class="text-[10px] mt-1 font-semibold">Transfer</span></button>
-   <button onclick="openMyQrCode()" class="flex flex-col items-center text-slate-400 hover:text-orange-400 transition"><i class="fa-solid fa-qrcode text-base"></i><span class="text-[10px] mt-1 font-semibold">QR Saya</span></button>
-   <button onclick="switchTab('riwayat')" id="nav-riwayat" class="flex flex-col items-center text-slate-400 hover:text-orange-400 transition"><i class="fa-solid fa-receipt text-base"></i><span class="text-[10px] mt-1 font-semibold">Mutasi</span></button>
-  </nav>
- </div>
-
- <!-- MODALS (QR, TRANSFER, SCANNER, STRUK) -->
- <div id="myQrModal" class="fixed inset-0 bg-black/85 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
-  <div class="bg-slate-900 border border-slate-700 w-full max-w-sm rounded-3xl p-6 text-center space-y-4 shadow-2xl animate-card">
-   <div class="flex justify-between items-center"><h3 class="font-bold text-sm text-white">QR Code Rekening Saya</h3><button onclick="closeModal('myQrModal')" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button></div>
-   <div class="bg-white p-4 rounded-2xl w-48 h-48 mx-auto flex items-center justify-center shadow-lg"><div id="qrcodeContainer"></div></div>
-   <div><h4 id="qrModalName" class="font-bold text-sm text-white">-</h4><p id="qrModalId" class="text-xs font-mono text-orange-400 font-bold mt-0.5">-</p></div>
   </div>
- </div>
 
- <div id="transferModal" class="fixed inset-0 bg-black/80 backdrop-blur-xs z-50 hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
-  <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl max-h-[90vh] overflow-y-auto">
-   <div class="flex justify-between items-center mb-5"><div class="flex items-center space-x-2.5"><div class="w-9 h-9 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center"><i class="fa-solid fa-paper-plane"></i></div><h3 class="font-bold text-base text-white">Transfer Antar Rekening (012)</h3></div><button onclick="closeModal('transferModal')" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button></div>
-   <form onsubmit="handleTransferSubmit(event)" class="space-y-4">
-    <div>
-     <label class="block text-xs font-semibold text-slate-300 mb-1.5">ID / No. Rekening Tujuan</label>
-     <div class="flex gap-2">
-      <div class="flex-1 flex items-center bg-slate-950 border border-slate-700 rounded-xl overflow-hidden"><span class="pl-3.5 pr-1 py-2.5 text-xs font-mono font-extrabold text-orange-400 select-none">NSB-</span><input type="text" id="tfTargetId" oninput="lookupTargetNasabah(this.value)" required maxlength="5" inputmode="numeric" placeholder="002" class="w-full bg-transparent pr-3.5 py-2.5 text-xs font-mono uppercase text-white focus:outline-none"></div>
-      <button type="button" onclick="openScannerCameraNasabah()" class="px-3.5 py-2.5 rounded-xl bg-orange-500/20 border border-orange-500/40 text-orange-400 hover:bg-orange-500 hover:text-slate-950 font-bold text-xs transition flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-qrcode"></i><span>Scan</span></button>
-     </div>
-     <p id="targetLookupName" class="text-[11px] text-slate-400 mt-1.5 font-medium">Ketik ID tujuan untuk melihat nama penerima</p>
+  <!-- Modal Scan Kamera QR -->
+  <div id="scanModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border-2 border-slate-700 w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-4 text-center">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="text-base font-black text-white">Scan Kamera QR</h3>
+        <button type="button" onclick="closeScanCamera()" class="w-10 h-10 rounded-xl bg-slate-800 text-slate-300 flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="reader" class="w-full rounded-2xl overflow-hidden bg-slate-950 border border-slate-800"></div>
+      <p id="scanStatusText" class="text-xs font-semibold text-slate-300">Arahkan kamera ke QR tujuan.</p>
+      <button type="button" onclick="closeScanCamera()" class="w-full py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm cursor-pointer">Tutup Kamera</button>
     </div>
-    <div>
-     <label class="block text-xs font-semibold text-slate-300 mb-1.5">Nominal Transfer (Rp)</label>
-     <input type="number" id="tfAmount" required min="1000" step="500" placeholder="Masukkan nominal" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-3 text-base font-extrabold text-orange-400 focus:outline-none">
-     <div class="flex gap-2 mt-2">
-      <button type="button" onclick="document.getElementById('tfAmount').value=50000" class="px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] text-slate-300">50rb</button>
-      <button type="button" onclick="document.getElementById('tfAmount').value=100000" class="px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] text-slate-300">100rb</button>
-      <button type="button" onclick="document.getElementById('tfAmount').value=250000" class="px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] text-slate-300">250rb</button>
-      <button type="button" onclick="document.getElementById('tfAmount').value=500000" class="px-2.5 py-1 rounded-lg bg-slate-800 text-[11px] text-slate-300">500rb</button>
-     </div>
+  </div>
+
+  <!-- Modal Bukti Struk Transfer -->
+  <div id="receiptModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border-2 border-emerald-500/50 w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-4">
+      <div class="text-center border-b border-dashed border-slate-700 pb-4 mb-2">
+        <div class="w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-2 text-2xl"><i class="fa-solid fa-check"></i></div>
+        <span class="text-xs font-black uppercase tracking-widest text-emerald-400">TRANSFER BERHASIL</span>
+        <h3 id="rcpAmount" class="text-2xl font-black text-white mt-1">Rp 0</h3>
+        <p id="rcpDate" class="text-xs text-slate-300 mt-1">-</p>
+      </div>
+      <div class="space-y-2.5 text-xs font-medium">
+        <div class="flex justify-between"><span class="text-slate-400">No. Referensi</span><span id="rcpRef" class="font-mono text-white"></span></div>
+        <div class="flex justify-between"><span class="text-slate-400">Penerima</span><span id="rcpTarget" class="font-bold text-white"></span></div>
+        <div class="flex justify-between"><span class="text-slate-400">Catatan</span><span id="rcpNote" class="text-slate-200"></span></div>
+        <div class="flex justify-between"><span class="text-slate-400">Sisa Saldo</span><span id="rcpBalance" class="font-black text-emerald-400"></span></div>
+      </div>
+      <div class="pt-2 space-y-3 bg-slate-950 p-4 rounded-2xl border border-slate-800">
+        <p class="text-xs text-center font-bold text-slate-200">Unduh PDF & Kirim ke WhatsApp?</p>
+        <div class="grid grid-cols-2 gap-3">
+          <button type="button" onclick="confirmSendWhatsApp(false)" class="py-3.5 rounded-2xl bg-slate-800 text-slate-300 text-xs font-bold cursor-pointer">Tidak</button>
+          <button type="button" onclick="confirmSendWhatsApp(true)" class="py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black flex items-center justify-center gap-2 shadow-lg cursor-pointer"><i class="fa-brands fa-whatsapp text-base"></i><span>Kirim WA</span></button>
+        </div>
+      </div>
     </div>
-    <div><label class="block text-xs font-semibold text-slate-300 mb-1.5">Catatan Transfer (Opsional)</label><input type="text" id="tfNote" placeholder="Contoh: Pembayaran iuran" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none"></div>
-    <div><label class="block text-xs font-semibold text-slate-300 mb-1.5">PIN Transaksi (6 Digit)</label><input type="password" id="tfPin" required maxlength="6" inputmode="numeric" placeholder="••••••" class="w-full tracking-[0.6em] text-center font-bold bg-slate-950 border border-slate-700 rounded-xl py-3 text-white focus:outline-none"></div>
-    <button type="submit" id="submitTfBtn" class="w-full py-3.5 rounded-2xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs transition shadow-lg shadow-orange-600/30">Kirim Transfer Sekarang</button>
-   </form>
   </div>
- </div>
 
- <div id="scannerModal" class="fixed inset-0 bg-black/85 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
-  <div class="bg-slate-900 border border-slate-700 w-full max-w-sm rounded-3xl p-6 text-center space-y-4 shadow-2xl">
-   <div class="flex justify-between items-center"><h3 class="font-bold text-sm text-white">Scan QR Tujuan Transfer</h3><button onclick="closeScannerCameraNasabah()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button></div>
-   <div class="relative bg-slate-950 border border-slate-800 rounded-2xl h-72 flex flex-col items-center justify-center overflow-hidden"><div id="readerNasabah" class="w-full h-full"></div></div>
-  </div>
- </div>
-
- <div id="receiptModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-[60] hidden flex items-center justify-center p-4">
-  <div class="bg-slate-900 border border-slate-700 w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-4 animate-card">
-   <div class="text-center border-b border-dashed border-slate-700 pb-3 mb-2">
-    <div class="w-12 h-12 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center mx-auto mb-2 text-xl"><i class="fa-solid fa-check"></i></div>
-    <span class="text-[10px] font-bold uppercase tracking-widest text-orange-400">TRANSFER BERHASIL (012)</span>
-    <h3 id="rcpAmount" class="text-2xl font-extrabold text-white mt-1">Rp 0</h3>
-    <p id="rcpDate" class="text-[11px] text-slate-400 mt-0.5">-</p>
-   </div>
-   <div class="space-y-2 text-xs">
-    <div class="flex justify-between"><span class="text-slate-400">No. Referensi</span><span id="rcpRef" class="font-mono text-slate-200">-</span></div>
-    <div class="flex justify-between"><span class="text-slate-400">Tujuan</span><span id="rcpTargetName" class="font-bold text-white">-</span></div>
-    <div class="flex justify-between"><span class="text-slate-400">Catatan</span><span id="rcpNote" class="text-slate-300">-</span></div>
-    <div class="flex justify-between"><span class="text-slate-400">Sisa Saldo</span><span id="rcpFinalBalance" class="font-bold text-orange-400">Rp 0</span></div>
-   </div>
-   <div class="pt-2 space-y-3 bg-slate-950/60 p-3.5 rounded-2xl border border-slate-800">
-    <p class="text-xs text-center font-semibold text-slate-300">Kirim struk PDF ke WhatsApp Penerima?</p>
-    <div class="grid grid-cols-2 gap-2.5">
-     <button onclick="confirmSendWhatsApp(false)" class="py-2.5 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">Tidak</button>
-     <button onclick="confirmSendWhatsApp(true)" class="py-2.5 rounded-xl bg-orange-600 hover:bg-orange-500 text-white text-xs font-extrabold flex items-center justify-center gap-1.5 shadow-lg"><i class="fa-brands fa-whatsapp text-sm"></i><span>Ya, Kirim</span></button>
+  <!-- Custom Alert Modal -->
+  <div id="customAlertModal" class="fixed inset-0 bg-black/85 backdrop-blur-sm z-[100] hidden flex items-center justify-center p-4 transition-opacity">
+    <div id="customAlertBox" class="bg-slate-900 border-2 border-emerald-500/50 w-full max-w-xs rounded-3xl p-6 shadow-2xl text-center space-y-4 transform transition-all">
+      <div id="customAlertIconWrapper" class="w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-2xl border border-emerald-500/30">
+        <i id="customAlertIcon" class="fa-solid fa-circle-info"></i>
+      </div>
+      <div class="space-y-1.5">
+        <h3 id="customAlertTitle" class="text-base font-black text-white">Pemberitahuan</h3>
+        <p id="customAlertMessage" class="text-xs text-slate-300 whitespace-pre-line leading-relaxed"></p>
+      </div>
+      <button type="button" onclick="closeCustomAlert()" id="customAlertBtn" class="w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs shadow-lg transition cursor-pointer">
+        Mengerti
+      </button>
     </div>
-   </div>
   </div>
- </div>
 
- <div id="toastContainer" class="fixed top-5 left-1/2 -translate-x-1/2 z-[70] w-[90%] max-w-sm pointer-events-none space-y-2"></div>
-</body>
+  <script>
+    function showCustomAlert(message, title = 'Pemberitahuan', type = 'info') {
+      const modal = document.getElementById('customAlertModal');
+      const box = document.getElementById('customAlertBox');
+      const iconWrapper = document.getElementById('customAlertIconWrapper');
+      const icon = document.getElementById('customAlertIcon');
+      const titleEl = document.getElementById('customAlertTitle');
+      const msgEl = document.getElementById('customAlertMessage');
+      const btn = document.getElementById('customAlertBtn');
 
-<style>
-  body { font-family: 'Inter', sans-serif; background-color: #020617; }
-  ::-webkit-scrollbar { width: 4px; height: 4px; }
-  ::-webkit-scrollbar-track { background: #0f172a; }
-  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
-  @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-  .animate-card { animation: fadeSlideUp 0.45s ease-out forwards; }
-  .nasabah-mesh { background-image: radial-gradient(at 85% 15%, rgba(249, 115, 22, 0.28) 0px, transparent 55%), radial-gradient(at 15% 85%, rgba(234, 88, 12, 0.22) 0px, transparent 55%), linear-gradient(135deg, #0f172a 0%, #29150b 50%, #431407 100%); }
-  #readerNasabah { width: 100% !important; height: 100% !important; border: none !important; }
-  #readerNasabah video { width: 100% !important; height: 100% !important; object-fit: cover !important; border-radius: 1rem; }
-  #readerNasabah__dashboard_section_csr { display: none !important; }
-</style>
+      titleEl.textContent = title;
+      msgEl.textContent = message;
 
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').then((reg) => {
-        console.log('Service Worker terdaftar:', reg);
-      }).catch(() => {});
-    });
-  }
-
-  // Inisialisasi Firebase Klien Berdasarkan File JSON Anda
-  const firebaseConfig = {
-      apiKey: "AIzaSyAbsj8FdkvymawPqBBCsNVHjkN26b8MytU",
-      projectId: "bini-syariah-admin",
-      storageBucket: "bini-syariah-admin.firebasestorage.app",
-      messagingSenderId: "515967831505",
-      appId: "1:515967831505:android:bcf557b78333754fa6e4f0"
-  };
-
-  if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-  }
-  const messaging = firebase.messaging();
-
-  async function registerFcmToken(nasabahId) {
-      try {
-          const permission = await Notification.requestPermission();
-          if (permission === 'granted') {
-              const token = await messaging.getToken();
-              if (token) {
-                  fetch(SCRIPT_URL, {
-                      method: 'POST',
-                      body: JSON.stringify({ action: 'saveFcmToken', data: { nasabahId: nasabahId, token: token } })
-                  });
-              }
-          }
-      } catch (e) {}
-  }
-</script>
-
-<script>
-  const sessionNasabahId = sessionStorage.getItem('nusa_nasabah_session');
-  if (!sessionNasabahId) window.location.href = 'index.html';
-
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwu0kGhiGxqD1wH5MeqWxIDMfep_SsTLYkpYMnjwzGJNu2kUPAW8T83SL2C1t52CH9r/exec";
-
-  let currentNasabah = null;
-  let allNasabahData = [];
-  let nasabahMutasi = [];
-  let broadcastBanners = [];
-  let activeBannerIdx = 0;
-  let isBalanceHidden = false;
-  let pendingReceiptData = null;
-  let html5QrCodeNasabah = null;
-  let qrCodeInstance = null;
-  let lastKnownBalance = 0;
-
-  // --- PEMBACA SUARA LUWES (TERBILANG) ---
-  function terbilang(nominal) {
-      const angka = Math.abs(Number(nominal));
-      if (isNaN(angka) || angka === 0) return "nol rupiah";
-      const huruf = ["", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas"];
-      let res = "";
-      if (angka < 12) res = huruf[angka];
-      else if (angka < 20) res = terbilang(angka - 10) + " belas";
-      else if (angka < 100) res = terbilang(Math.floor(angka / 10)) + " puluh " + terbilang(angka % 10);
-      else if (angka < 200) res = "seratus " + terbilang(angka - 100);
-      else if (angka < 1000) res = terbilang(Math.floor(angka / 100)) + " ratus " + terbilang(angka % 100);
-      else if (angka < 2000) res = "seribu " + terbilang(angka - 1000);
-      else if (angka < 1000000) res = terbilang(Math.floor(angka / 1000)) + " ribu " + terbilang(angka % 1000);
-      else if (angka < 1000000000) res = terbilang(Math.floor(angka / 1000000)) + " juta " + terbilang(angka % 1000000);
-      else if (angka < 1000000000000) res = terbilang(Math.floor(angka / 1000000000)) + " miliar " + terbilang(angka % 1000000000);
-      return res.replace(/\s+/g, ' ').trim();
-  }
-
-  function putarSuaraNasabah(pesanTeks, nominalUang = null) {
-      if (!('speechSynthesis' in window)) return;
-      window.speechSynthesis.cancel();
-      let teksLengkap = pesanTeks;
-      if (nominalUang !== null && !isNaN(nominalUang)) teksLengkap += ", sebesar " + terbilang(nominalUang) + " rupiah";
-      const utterance = new SpeechSynthesisUtterance(teksLengkap);
-      utterance.lang = 'id-ID';
-      utterance.rate = 1.0;
-      utterance.pitch = 1.0;
-      const voices = window.speechSynthesis.getVoices();
-      const idVoice = voices.find(v => v.lang === 'id-ID' || v.lang === 'id_ID');
-      if (idVoice) utterance.voice = idVoice;
-      window.speechSynthesis.speak(utterance);
-  }
-
-  function openMyQrCode() {
-      if (!currentNasabah) return;
-      openModal('myQrModal');
-      document.getElementById('qrModalName').textContent = currentNasabah.name;
-      document.getElementById('qrModalId').textContent = `${currentNasabah.id} • ${currentNasabah.acc}`;
-      const container = document.getElementById('qrcodeContainer');
-      container.innerHTML = '';
-      qrCodeInstance = new QRCode(container, { text: currentNasabah.id, width: 160, height: 160, colorDark: "#020617", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H });
-  }
-
-  function formatRupiah(num) { return 'Rp ' + Number(num || 0).toLocaleString('id-ID'); }
-  function normalizeCustomerId(rawInput) {
-      let clean = String(rawInput || '').trim().toUpperCase();
-      if (clean.startsWith('NSB-')) clean = clean.replace('NSB-', '');
-      return clean ? 'NSB-' + clean : '';
-  }
-
-  function toggleDrawer(show) {
-      const drawer = document.getElementById('navDrawer');
-      const backdrop = document.getElementById('drawerBackdrop');
-      if (show) { backdrop.classList.remove('hidden'); setTimeout(() => backdrop.classList.remove('opacity-0'), 10); drawer.classList.remove('-translate-x-full'); }
-      else { drawer.classList.add('-translate-x-full'); backdrop.classList.add('opacity-0'); setTimeout(() => backdrop.classList.add('hidden'), 300); }
-  }
-
-  function handleLogout() {
-      sessionStorage.removeItem('nusa_nasabah_session');
-      showToast('Keluar dari sesi...', 'warning');
-      setTimeout(() => { window.location.href = 'index.html'; }, 700);
-  }
-
-  function switchTab(tabName) {
-      ['beranda', 'riwayat'].forEach(t => {
-          document.getElementById('tab-' + t).classList.add('hidden');
-          document.getElementById('nav-' + t).className = 'flex flex-col items-center text-slate-400 hover:text-orange-400 transition';
-      });
-      document.getElementById('tab-' + tabName).classList.remove('hidden');
-      document.getElementById('nav-' + tabName).className = 'flex flex-col items-center text-orange-400 transition';
-      if (tabName === 'riwayat') renderFullHistory();
-  }
-
-  function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-  function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-
-  function openScannerCameraNasabah() {
-      openModal('scannerModal');
-      if (!html5QrCodeNasabah) html5QrCodeNasabah = new Html5Qrcode("readerNasabah");
-      html5QrCodeNasabah.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 240, height: 240 } }, (txt) => {
-          let clean = txt.trim();
-          if (clean.includes('NSB-')) clean = clean.split('NSB-')[1];
-          document.getElementById('tfTargetId').value = clean;
-          lookupTargetNasabah(clean);
-          closeScannerCameraNasabah();
-      }, () => {}).catch(() => {});
-  }
-
-  function closeScannerCameraNasabah() {
-      if (html5QrCodeNasabah && html5QrCodeNasabah.isScanning) {
-          html5QrCodeNasabah.stop().then(() => closeModal('scannerModal')).catch(() => closeModal('scannerModal'));
-      } else { closeModal('scannerModal'); }
-  }
-
-  function toggleBalanceVisibility() {
-      if (!currentNasabah) return;
-      isBalanceHidden = !isBalanceHidden;
-      const display = document.getElementById('mainBalanceDisplay');
-      const eyeIcon = document.getElementById('eyeIcon');
-      if (isBalanceHidden) { display.textContent = 'Rp ••••••••'; eyeIcon.className = 'fa-solid fa-eye-slash text-xs text-orange-400'; }
-      else { display.textContent = formatRupiah(currentNasabah.balance); eyeIcon.className = 'fa-solid fa-eye text-xs'; }
-  }
-
-  function updateBalanceUI() {
-      if (!currentNasabah) return;
-      if (!isBalanceHidden) document.getElementById('mainBalanceDisplay').textContent = formatRupiah(currentNasabah.balance);
-  }
-
-  function renderLargeBroadcastCarousel() {
-      const container = document.getElementById('largeBroadcastCarousel');
-      if (!container) return;
-      if (broadcastBanners.length === 0) { container.innerHTML = `<div class="p-6 text-center text-xs text-slate-500">Belum ada pengumuman broadcast.</div>`; return; }
-      if (activeBannerIdx >= broadcastBanners.length) activeBannerIdx = 0;
-      const b = broadcastBanners[activeBannerIdx];
-      let buttonsHTML = '';
-      let activeBtns = 0;
-      if (b.btn1Label) activeBtns++; if (b.btn2Label) activeBtns++; if (b.btn3Label) activeBtns++;
-      if (activeBtns > 0) {
-          buttonsHTML += `<div class="grid grid-cols-${activeBtns} gap-2 mt-3">`;
-          if (b.btn1Label) buttonsHTML += `<a href="${b.btn1Url || '#'}" target="_blank" class="py-2 px-3 rounded-xl bg-orange-600 text-white font-bold text-[10px] text-center truncate">${b.btn1Label}</a>`;
-          if (b.btn2Label) buttonsHTML += `<a href="${b.btn2Url || '#'}" target="_blank" class="py-2 px-3 rounded-xl bg-emerald-600 text-white font-bold text-[10px] text-center truncate">${b.btn2Label}</a>`;
-          if (b.btn3Label) buttonsHTML += `<a href="${b.btn3Url || '#'}" target="_blank" class="py-2 px-3 rounded-xl bg-sky-600 text-white font-bold text-[10px] text-center truncate">${b.btn3Label}</a>`;
-          buttonsHTML += `</div>`;
+      if (type === 'success') {
+        box.className = 'bg-slate-900 border-2 border-emerald-500/50 w-full max-w-xs rounded-3xl p-6 shadow-2xl text-center space-y-4';
+        iconWrapper.className = 'w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-2xl border border-emerald-500/30';
+        icon.className = 'fa-solid fa-circle-check';
+        btn.className = 'w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs shadow-lg transition cursor-pointer';
+      } else if (type === 'error') {
+        box.className = 'bg-slate-900 border-2 border-red-500/50 w-full max-w-xs rounded-3xl p-6 shadow-2xl text-center space-y-4';
+        iconWrapper.className = 'w-14 h-14 rounded-2xl bg-red-500/20 text-red-400 flex items-center justify-center mx-auto text-2xl border border-red-500/30';
+        icon.className = 'fa-solid fa-circle-exclamation';
+        btn.className = 'w-full py-3.5 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-black text-xs shadow-lg transition cursor-pointer';
+      } else if (type === 'notif') {
+        box.className = 'bg-slate-900 border-2 border-amber-500/50 w-full max-w-xs rounded-3xl p-6 shadow-2xl text-center space-y-4';
+        iconWrapper.className = 'w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto text-2xl border border-amber-500/30';
+        icon.className = 'fa-solid fa-bell';
+        btn.className = 'w-full py-3.5 rounded-2xl bg-amber-600 hover:bg-amber-500 text-white font-black text-xs shadow-lg transition cursor-pointer';
+      } else {
+        box.className = 'bg-slate-900 border-2 border-emerald-500/50 w-full max-w-xs rounded-3xl p-6 shadow-2xl text-center space-y-4';
+        iconWrapper.className = 'w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-2xl border border-emerald-500/30';
+        icon.className = 'fa-solid fa-circle-info';
+        btn.className = 'w-full py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs shadow-lg transition cursor-pointer';
       }
-      container.innerHTML = `
-          <div class="p-5 bg-gradient-to-br ${b.theme} border rounded-3xl transition-all duration-700 animate-card flex flex-col justify-between min-h-[155px]">
-              <div class="flex justify-between items-center mb-2"><span class="px-2.5 py-1 rounded-lg bg-black/50 text-[10px] font-extrabold text-orange-300 uppercase border border-orange-400/30">${b.badge}</span></div>
-              <div class="space-y-1 my-1"><h4 class="text-sm sm:text-base font-extrabold text-white">${b.title}</h4><p class="text-xs text-slate-300 line-clamp-3">${b.desc}</p>${buttonsHTML}</div>
-          </div>`;
-  }
 
-  async function fetchNasabahData() {
-      const syncDot = document.getElementById('syncDot');
-      syncDot.className = 'w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse';
-      try {
-          const response = await fetch(`${SCRIPT_URL}?action=getAllData`);
-          const result = await response.json();
-          if (result.status === 'success') {
-              allNasabahData = (result.nasabah || []).map(row => ({
-                  id: String(row.ID_Nasabah), name: String(row.Nama), address: String(row.Alamat),
-                  phone: String(row.Telepon_WA), pin: String(row.PIN), acc: String(row.No_Rekening), balance: Number(row.Saldo || 0)
-              }));
-              nasabahMutasi = (result.mutasi || []).map(row => ({
-                  id: String(row.No_Ref), nasabahId: String(row.ID_Nasabah), custName: String(row.Nama_Nasabah),
-                  type: String(row.Jenis).toUpperCase(), amount: Number(row.Nominal || 0), date: String(row.Tanggal), timestamp: Number(row.Timestamp || 0), note: String(row.Keterangan || '-')
-              })).sort((a, b) => b.timestamp - a.timestamp);
-              broadcastBanners = (result.broadcast || []).map(row => ({
-                  id: String(row.ID_Slide), badge: String(row.Badge), title: String(row.Judul), desc: String(row.Deskripsi), theme: String(row.Tema),
-                  btn1Label: String(row.Btn1_Label || ''), btn1Url: String(row.Btn1_Url || ''), btn2Label: String(row.Btn2_Label || ''), btn2Url: String(row.Btn2_Url || ''), btn3Label: String(row.Btn3_Label || ''), btn3Url: String(row.Btn3_Url || '')
-              }));
+      modal.classList.remove('hidden');
+    }
 
-              const freshNasabah = allNasabahData.find(n => n.id === sessionNasabahId);
-              if (freshNasabah) {
-                  if (lastKnownBalance > 0 && freshNasabah.balance !== lastKnownBalance) {
-                      let selisih = freshNasabah.balance - lastKnownBalance;
-                      if (selisih > 0) putarSuaraNasabah("Saldo masuk", selisih);
-                      else putarSuaraNasabah("Anda telah melakukan tarik tunai", Math.abs(selisih));
-                  }
-                  lastKnownBalance = freshNasabah.balance;
-                  currentNasabah = freshNasabah;
-                  applyNasabahToUI();
-                  renderLargeBroadcastCarousel();
-                  syncDot.className = 'w-1.5 h-1.5 rounded-full bg-emerald-400';
-              }
-          }
-      } catch (err) { syncDot.className = 'w-1.5 h-1.5 rounded-full bg-rose-500'; }
-  }
+    function closeCustomAlert() {
+      document.getElementById('customAlertModal').classList.add('hidden');
+    }
+  </script>
 
-  setInterval(() => {
-      if (document.getElementById('transferModal').classList.contains('hidden') && document.getElementById('scannerModal').classList.contains('hidden')) {
-          fetchNasabahData();
+  <!-- Script Logika Dashboard Nasabah -->
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw5jTLvsc9nKsVikolWzQk1n9mUCFKNOCu0Evzwt4R3gN5528jVPEiwU2JyrmjTs2xd/exec";
+    let currentNasabah = JSON.parse(localStorage.getItem('currentNasabah') || 'null');
+    let cachedNasabahList = [];
+    let pendingReceiptData = null;
+    let html5QrCode = null;
+
+    if (!currentNasabah) { window.location.href = 'index.html'; }
+
+    function formatRupiah(num) { return 'Rp ' + Number(num).toLocaleString('id-ID'); }
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    function logoutNasabah() { localStorage.removeItem('currentNasabah'); window.location.href = 'index.html'; }
+
+    window.onload = function() {
+      if (currentNasabah) {
+        document.getElementById('nasabahIdBadge').textContent = 'ID: ' + currentNasabah.ID_Nasabah;
+        document.getElementById('nasabahNama').textContent = currentNasabah.Nama;
+        document.getElementById('nasabahRekening').textContent = 'No. Rek: ' + currentNasabah.No_Rekening;
+        document.getElementById('nasabahSaldo').textContent = formatRupiah(currentNasabah.Saldo || 0);
+
+        if (currentNasabah.Status_Akun === 'WAJIB_GANTI_PIN') {
+          openModal('changePinModal');
+        }
+        fetchNasabahData();
       }
-  }, 5000);
+    };
 
-  function applyNasabahToUI() {
-      if (!currentNasabah) return;
-      document.getElementById('headerNasabahName').textContent = currentNasabah.name;
-      document.getElementById('drawerName').textContent = currentNasabah.name;
-      document.getElementById('drawerId').textContent = `${currentNasabah.id} • Nasabah Aktif`;
-      document.getElementById('accountNumberText').textContent = currentNasabah.acc || '-';
-      document.getElementById('nasabahIdBadge').textContent = currentNasabah.id;
-      document.getElementById('drawerAvatar').textContent = currentNasabah.name.split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase();
-      updateBalanceUI();
-      renderRecentTransactions();
-  }
-
-  function lookupTargetNasabah(val) {
-      const fullId = normalizeCustomerId(val);
-      const label = document.getElementById('targetLookupName');
-      if (!fullId) { label.textContent = 'Ketik ID tujuan'; label.className = 'text-[11px] text-slate-400 mt-1.5 font-medium'; return; }
-      if (currentNasabah && fullId === currentNasabah.id) { label.textContent = 'Tidak dapat transfer ke akun sendiri'; label.className = 'text-[11px] text-rose-400 mt-1.5 font-semibold'; return; }
-      const found = allNasabahData.find(c => c.id === fullId);
-      if (found) { label.textContent = `Penerima: ${found.name} (${found.acc})`; label.className = 'text-[11px] text-emerald-400 mt-1.5 font-bold'; }
-      else { label.textContent = `ID ${fullId} tidak ditemukan`; label.className = 'text-[11px] text-rose-400 mt-1.5 font-semibold'; }
-  }
-
-  async function handleTransferSubmit(e) {
+    async function handleForceChangePin(e) {
       e.preventDefault();
-      if (!currentNasabah) return;
-      const targetId = normalizeCustomerId(document.getElementById('tfTargetId').value);
-      const amount = Number(document.getElementById('tfAmount').value);
-      const note = document.getElementById('tfNote').value.trim();
-      const pin = document.getElementById('tfPin').value.trim();
+      const p1 = document.getElementById('newPin1').value.trim();
+      const p2 = document.getElementById('newPin2').value.trim();
+      const btn = document.getElementById('btnChangePin');
 
-      if (targetId === currentNasabah.id) { showToast('Tidak dapat transfer ke rekening sendiri.', 'error'); return; }
-      const targetContact = allNasabahData.find(c => c.id === targetId);
-      if (!targetContact) { showToast('Rekening tujuan tidak ditemukan!', 'error'); return; }
-      if (String(pin) !== String(currentNasabah.pin)) { showToast('PIN Transaksi salah!', 'error'); putarSuaraNasabah("PIN transaksi salah"); return; }
-      if (amount > currentNasabah.balance) { showToast('Saldo tidak mencukupi.', 'error'); putarSuaraNasabah("Saldo tidak mencukupi"); return; }
+      if (p1.length !== 6 || isNaN(p1)) { showCustomAlert('PIN harus berupa 6 angka.', 'Format PIN Salah', 'error'); return; }
+      if (p1 !== p2) { showCustomAlert('Konfirmasi PIN baru tidak sama.', 'PIN Tidak Cocok', 'error'); return; }
 
-      const btn = document.getElementById('submitTfBtn');
-      btn.disabled = true; btn.textContent = 'Memproses Transfer...';
-
-      const now = new Date();
-      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
-      const dateStr = `${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-      const refCode = 'TRF-' + Date.now().toString().slice(-8);
+      btn.disabled = true;
+      btn.textContent = 'Menyimpan...';
 
       try {
-          const res = await fetch(SCRIPT_URL, {
-              method: 'POST',
-              body: JSON.stringify({
-                  action: 'processTransfer',
-                  data: { senderId: currentNasabah.id, senderName: currentNasabah.name, receiverId: targetContact.id, receiverName: targetContact.name, amount, refCode, date: dateStr, timestamp: Math.floor(Date.now() / 1000), note: note || 'Transfer P2P' }
-              })
-          });
-          const result = await res.json();
-          if (result.status === 'success') {
-              putarSuaraNasabah("Transaksi berhasil", amount);
-              await fetchNasabahData();
-              pendingReceiptData = { id: refCode, date: dateStr, amount, note: note || 'Transfer P2P', targetName: `${targetContact.name} (${targetId})`, targetPhone: targetContact.phone, finalBalance: result.senderFinalBalance };
-              
-              document.getElementById('rcpAmount').textContent = formatRupiah(amount);
-              document.getElementById('rcpDate').textContent = dateStr;
-              document.getElementById('rcpRef').textContent = refCode;
-              document.getElementById('rcpTargetName').textContent = `${targetContact.name} (${targetId})`;
-              document.getElementById('rcpNote').textContent = note || '-';
-              document.getElementById('rcpFinalBalance').textContent = formatRupiah(result.senderFinalBalance);
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'updatePin', data: { nasabahId: currentNasabah.ID_Nasabah, newPin: p1 } })
+        });
+        const result = await res.json();
+        if (result.status === 'success') {
+          showCustomAlert('PIN baru Anda berhasil disimpan!', 'PIN Berhasil Diubah', 'success');
+          currentNasabah.PIN = p1;
+          currentNasabah.Status_Akun = 'AKTIF';
+          localStorage.setItem('currentNasabah', JSON.stringify(currentNasabah));
+          closeModal('changePinModal');
+        } else { showCustomAlert(result.message || 'Gagal mengubah PIN.', 'Gagal Mengubah PIN', 'error'); }
+      } catch(err) { showCustomAlert('Kesalahan jaringan saat menyimpan PIN.', 'Gagal Terhubung', 'error'); } finally { btn.disabled = false; btn.textContent = 'Simpan PIN Baru'; }
+    }
 
-              closeModal('transferModal');
-              openModal('receiptModal');
-              e.target.reset();
-          } else { showToast(result.message || 'Transfer gagal.', 'error'); putarSuaraNasabah("Transfer gagal"); }
-      } catch (err) { showToast('Gagal terhubung ke server.', 'error'); }
-      finally { btn.disabled = false; btn.textContent = 'Kirim Transfer Sekarang'; }
-  }
+    async function fetchNasabahData() {
+      try {
+        const res = await fetch(SCRIPT_URL + '?action=getAllData');
+        const result = await res.json();
+        if (result.status === 'success') {
+          cachedNasabahList = result.nasabah || [];
+          const fresh = cachedNasabahList.find(n => n.ID_Nasabah === currentNasabah.ID_Nasabah);
+          if (fresh) {
+            currentNasabah = fresh;
+            localStorage.setItem('currentNasabah', JSON.stringify(fresh));
+            document.getElementById('nasabahSaldo').textContent = formatRupiah(fresh.Saldo || 0);
+          }
+          const myMutasi = (result.mutasi || []).filter(m => m.ID_Nasabah === currentNasabah.ID_Nasabah || m.Keterangan?.includes(currentNasabah.Nama));
+          renderMutasi(myMutasi);
+        }
+      } catch(e) {}
+    }
 
-  function confirmSendWhatsApp(isYes) {
+    function verifyTransferTarget() {
+      const query = document.getElementById('targetId').value.trim().toUpperCase();
+      const previewBox = document.getElementById('transferTargetPreview');
+      if (!query) { previewBox.classList.add('hidden'); return; }
+
+      const found = cachedNasabahList.find(n => {
+        const dbId = String(n.ID_Nasabah || '').trim().toUpperCase();
+        const dbAcc = String(n.No_Rekening || '').trim();
+        const dbPhone = String(n.Telepon_WA || '').trim().toUpperCase();
+
+        const matchIdOrAcc = (dbId === query || dbAcc === query);
+        const matchPhone = (dbPhone === query || dbPhone.endsWith(query) || dbPhone.replace('+', '') === query.replace('+', ''));
+
+        return (matchIdOrAcc || matchPhone);
+      });
+
+      if (found) {
+        if (found.ID_Nasabah === currentNasabah.ID_Nasabah) { previewBox.classList.add('hidden'); return; }
+        document.getElementById('tpNama').textContent = found.Nama;
+        document.getElementById('tpAlamat').textContent = found.Alamat || '-';
+        document.getElementById('tpTelepon').textContent = found.Telepon_WA || '-';
+        previewBox.classList.remove('hidden');
+      } else { previewBox.classList.add('hidden'); }
+    }
+
+    function openMyQRCode() {
+      if (!currentNasabah) return;
+      document.getElementById('qrNasabahName').textContent = currentNasabah.Nama;
+      document.getElementById('qrNasabahAcc').textContent = `No. Rek: ${currentNasabah.No_Rekening} (${currentNasabah.ID_Nasabah})`;
+      const qrData = encodeURIComponent(currentNasabah.ID_Nasabah + "|" + currentNasabah.No_Rekening);
+      document.getElementById('qrCodeImg').src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${qrData}`;
+      openModal('myQrModal');
+    }
+
+    function openScanModal() {
+      openModal('scanModal');
+      document.getElementById('scanStatusText').textContent = "Menyalakan kamera...";
+      setTimeout(() => {
+        if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
+        html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: { width: 220, height: 220 } }, (data) => { stopCameraAndProcess(data); }, () => {}).catch(() => { document.getElementById('scanStatusText').textContent = "Gagal membuka kamera."; });
+      }, 300);
+    }
+
+    function stopCameraAndProcess(data) {
+      if (html5QrCode && html5QrCode.isScanning) {
+        html5QrCode.stop().then(() => { closeModal('scanModal'); handleScannedResult(data); }).catch(() => { closeModal('scanModal'); });
+      } else { closeModal('scanModal'); handleScannedResult(data); }
+    }
+
+    function closeScanCamera() {
+      if (html5QrCode && html5QrCode.isScanning) { html5QrCode.stop().then(() => { closeModal('scanModal'); }).catch(() => { closeModal('scanModal'); }); } else { closeModal('scanModal'); }
+    }
+
+    function handleScannedResult(data) {
+      if (data.startsWith('BINI-VAL')) {
+        let parts = data.split('|');
+        let ref = parts[1] ? parts[1].split(':')[1] : '-';
+        let amt = parts[2] ? parts[2].split(':')[1] : '0';
+        let recipient = parts[3] ? parts[3].split(':')[1] : '-';
+        showCustomAlert(`No. Ref: ${ref}\nNominal: ${formatRupiah(amt)}\nPenerima: ${recipient}`, 'Validasi Struk Berhasil!', 'success');
+      } else {
+        let cleanId = data.includes('|') ? data.split('|')[0] : data;
+        document.getElementById('targetId').value = cleanId;
+        verifyTransferTarget();
+      }
+    }
+
+    function renderMutasi(list) {
+      const container = document.getElementById('mutasiListContainer');
+      document.getElementById('mutasiCount').textContent = `${list.length} Transaksi`;
+      container.innerHTML = '';
+      if (list.length === 0) { container.innerHTML = `<p class="text-sm text-slate-400 text-center py-6">Belum ada riwayat transaksi.</p>`; return; }
+      list.reverse().forEach(tx => {
+        const isMasuk = tx.Jenis.includes('MASUK') || tx.Jenis.includes('SETOR') || tx.Jenis.includes('REGISTRASI');
+        const div = document.createElement('div');
+        div.className = 'p-3.5 bg-slate-900 border border-slate-800 rounded-2xl flex justify-between items-center text-xs';
+        div.innerHTML = `
+          <div>
+            <h4 class="font-bold text-white text-sm">${tx.Keterangan || tx.Jenis}</h4>
+            <p class="text-xs text-slate-400 font-mono mt-0.5">${tx.Tanggal} • Ref: ${tx.No_Ref}</p>
+          </div>
+          <span class="font-mono font-black text-sm ${isMasuk ? 'text-emerald-400' : 'text-orange-400'}">${isMasuk ? '+' : '-'}${formatRupiah(tx.Nominal)}</span>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    async function handleTransferSubmit(e) {
+      e.preventDefault();
+      const targetId = document.getElementById('targetId').value.trim();
+      const amount = Number(document.getElementById('transferAmount').value);
+      const note = document.getElementById('transferNote').value.trim() || 'Transfer';
+      const pin = document.getElementById('transferPin').value.trim();
+      const btn = document.getElementById('btnTransfer');
+
+      if (pin !== String(currentNasabah.PIN).trim()) { showCustomAlert('PIN Transaksi yang Anda masukkan salah!', 'PIN Salah', 'error'); return; }
+      if (amount <= 0 || amount > Number(currentNasabah.Saldo)) { showCustomAlert('Nominal tidak valid atau saldo Anda tidak mencukupi.', 'Saldo Tidak Cukup', 'error'); return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Memproses Pengiriman...';
+
+      const refCode = 'TRF-' + Date.now().toString().slice(-6);
+      const dateStr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+      const timestamp = new Date().toISOString();
+
+      try {
+        const receiver = cachedNasabahList.find(n => {
+          const dbId = String(n.ID_Nasabah || '').trim().toUpperCase();
+          const dbAcc = String(n.No_Rekening || '').trim();
+          const dbPhone = String(n.Telepon_WA || '').trim().toUpperCase();
+          const targetClean = targetId.toUpperCase();
+
+          const matchIdOrAcc = (dbId === targetClean || dbAcc === targetClean);
+          const matchPhone = (dbPhone === targetClean || dbPhone.endsWith(targetClean) || dbPhone.replace('+', '') === targetClean.replace('+', ''));
+
+          return (matchIdOrAcc || matchPhone);
+        });
+
+        if (!receiver) { showCustomAlert('Rekening/No. HP tujuan tidak ditemukan dalam sistem.', 'Tujuan Tidak Ditemukan', 'error'); btn.disabled = false; btn.textContent = 'Kirim Uang Sekarang'; return; }
+
+        const res = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'processTransfer', data: { senderId: currentNasabah.ID_Nasabah, receiverId: receiver.ID_Nasabah, amount: amount, refCode: refCode, date: dateStr, timestamp: timestamp } })
+        });
+        const result = await res.json();
+        if (result.status === 'success') {
+          currentNasabah.Saldo = result.senderFinalBalance;
+          localStorage.setItem('currentNasabah', JSON.stringify(currentNasabah));
+          document.getElementById('nasabahSaldo').textContent = formatRupiah(result.senderFinalBalance);
+
+          pendingReceiptData = { id: refCode, date: dateStr, targetName: receiver.Nama, targetPhone: receiver.Telepon_WA, note: note, amount: amount, finalBalance: result.senderFinalBalance };
+
+          document.getElementById('rcpAmount').textContent = formatRupiah(amount);
+          document.getElementById('rcpDate').textContent = dateStr;
+          document.getElementById('rcpRef').textContent = refCode;
+          document.getElementById('rcpTarget').textContent = receiver.Nama;
+          document.getElementById('rcpNote').textContent = note;
+          document.getElementById('rcpBalance').textContent = formatRupiah(result.senderFinalBalance);
+
+          closeModal('transferModal');
+          openModal('receiptModal');
+          e.target.reset();
+          document.getElementById('transferTargetPreview').classList.add('hidden');
+          fetchNasabahData();
+        } else { showCustomAlert(result.message || 'Transfer gagal diproses.', 'Transfer Gagal', 'error'); }
+      } catch(err) { showCustomAlert('Kesalahan jaringan saat memproses transfer.', 'Gagal Terhubung', 'error'); } finally { btn.disabled = false; btn.textContent = 'Kirim Uang Sekarang'; }
+    }
+
+    async function confirmSendWhatsApp(isYes) {
       if (isYes && pendingReceiptData) {
-          const tx = pendingReceiptData;
-          try {
-              let phoneFormatted = String(tx.targetPhone || '').trim();
-              if (phoneFormatted.startsWith('0')) phoneFormatted = '62' + phoneFormatted.slice(1);
-              const waMessage = encodeURIComponent(`Halo *${tx.targetName.split(' ')[0]}*, dana transfer sebesar *${formatRupiah(tx.amount)}* telah diterima dari *${currentNasabah.name}* (Ref: ${tx.id}).`);
-              window.open(`https://wa.me/${phoneFormatted}?text=${waMessage}`, '_blank');
-              showToast('WhatsApp dibuka!', 'success');
-          } catch(e) {}
+        const tx = pendingReceiptData;
+        try {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: [80, 160] });
+          doc.setFillColor(15, 23, 42); doc.rect(0, 0, 80, 25, 'F');
+          doc.setTextColor(255, 255, 255); doc.setFont("helvetica", "bold"); doc.setFontSize(12);
+          doc.text("BINI SYARIAH", 40, 10, { align: "center" });
+          doc.setFontSize(8); doc.text("Suami Cari, Istri Menikmati", 40, 16, { align: "center" });
+
+          doc.setTextColor(30, 41, 59); doc.setFontSize(9); doc.setFont("helvetica", "bold");
+          doc.text("BUKTI TRANSFER RESMI", 40, 33, { align: "center" });
+          doc.setFontSize(8); doc.setFont("helvetica", "normal");
+          let y = 42;
+          const printRow = (label, val) => { doc.text(label, 8, y); doc.text(val, 72, y, { align: "right" }); y += 6; };
+          printRow("No. Ref", tx.id); printRow("Tanggal", tx.date); printRow("Pengirim", currentNasabah.Nama); printRow("Penerima", tx.targetName); printRow("Catatan", tx.note);
+          doc.line(8, y, 72, y); y += 7;
+          doc.setFont("helvetica", "bold"); printRow("Nominal", formatRupiah(tx.amount)); printRow("Sisa Saldo", formatRupiah(tx.finalBalance));
+
+          y += 5;
+          const validationString = `BINI-VAL|Ref:${tx.id}|Amt:${tx.amount}|To:${tx.targetName}`;
+          const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(validationString)}`;
+          doc.addImage(qrImageUrl, 'PNG', 25, y, 30, 30);
+          y += 33;
+          doc.setFontSize(7); doc.setTextColor(100, 116, 139);
+          doc.text("Scan QR untuk memvalidasi transaksi", 40, y, { align: "center" });
+
+          doc.save(`Struk-Transfer-${tx.id}.pdf`);
+
+          let phoneFormatted = String(tx.targetPhone || '').trim();
+          if (phoneFormatted.startsWith('0')) phoneFormatted = '62' + phoneFormatted.slice(1);
+          if (phoneFormatted.startsWith('+')) phoneFormatted = phoneFormatted.replace('+', '');
+
+          const waMessage = encodeURIComponent(`Halo *${tx.targetName.split(' ')[0]}*, transfer sebesar *${formatRupiah(tx.amount)}* telah berhasil dikirim oleh *${currentNasabah.Nama}*.\n\nNo. Ref: ${tx.id}\nStruk PDF resmi telah diunduh dengan QR Validasi.`);
+          
+          // Menggunakan protokol wa.me agar langsung membuka aplikasi WA di HP
+          window.location.href = `https://wa.me/${phoneFormatted}?text=${waMessage}`;
+        } catch(e) { showCustomAlert('Gagal mengunduh struk PDF.', 'Gagal Unduh PDF', 'error'); }
       }
       closeModal('receiptModal');
       pendingReceiptData = null;
-  }
-
-  function renderRecentTransactions() {
-      const container = document.getElementById('recentTransactionsList');
-      container.innerHTML = '';
-      if (!currentNasabah) return;
-      const userTx = nasabahMutasi.filter(t => t.nasabahId === currentNasabah.id);
-      if (userTx.length === 0) { container.innerHTML = `<p class="text-[11px] text-slate-500 text-center py-2">Belum ada mutasi</p>`; return; }
-      userTx.slice(0, 3).forEach(tx => {
-          const isCredit = tx.type.includes('SETOR') || tx.type.includes('KREDIT');
-          const item = document.createElement('div');
-          item.className = 'flex items-center justify-between p-3.5 rounded-2xl bg-slate-800/40 border border-slate-800 text-xs';
-          item.innerHTML = `<div class="flex items-center space-x-3"><div class="w-9 h-9 rounded-xl ${isCredit ? 'bg-orange-500/15 text-orange-400' : 'bg-rose-500/15 text-rose-400'} flex items-center justify-center"><i class="fa-solid ${isCredit ? 'fa-arrow-down-left' : 'fa-paper-plane'}"></i></div><div><h4 class="font-bold text-white">${tx.note}</h4><p class="text-[10px] text-slate-400">${tx.date}</p></div></div><span class="font-extrabold ${isCredit ? 'text-orange-400' : 'text-rose-400'}">${isCredit ? '+' : '-'}${formatRupiah(tx.amount)}</span>`;
-          container.appendChild(item);
-      });
-  }
-
-  function renderFullHistory() {
-      const container = document.getElementById('fullHistoryList');
-      container.innerHTML = '';
-      if (!currentNasabah) return;
-      const userTx = nasabahMutasi.filter(t => t.nasabahId === currentNasabah.id);
-      document.getElementById('txCountBadge').textContent = `${userTx.length} Transaksi`;
-      if (userTx.length === 0) { container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">Belum ada riwayat.</p>`; return; }
-      userTx.forEach(tx => {
-          const isCredit = tx.type.includes('SETOR') || tx.type.includes('KREDIT');
-          const item = document.createElement('div');
-          item.className = 'flex items-center justify-between p-3.5 rounded-2xl bg-slate-950 border border-slate-800 text-xs';
-          item.innerHTML = `<div class="flex items-center space-x-3"><div class="w-9 h-9 rounded-xl ${isCredit ? 'bg-orange-500/15 text-orange-400' : 'bg-rose-500/15 text-rose-400'} flex items-center justify-center"><i class="fa-solid ${isCredit ? 'fa-arrow-down-left' : 'fa-paper-plane'}"></i></div><div><h4 class="font-bold text-white">${tx.note}</h4><p class="text-[10px] text-slate-400">${tx.date} • Ref: ${tx.id}</p></div></div><span class="font-extrabold ${isCredit ? 'text-orange-400' : 'text-rose-400'}">${isCredit ? '+' : '-'}${formatRupiah(tx.amount)}</span>`;
-          container.appendChild(item);
-      });
-  }
-
-  function showToast(message, type = 'info') {
-      const container = document.getElementById('toastContainer');
-      const toast = document.createElement('div');
-      const colors = { success: 'border-orange-500 text-orange-300', error: 'border-rose-500 text-rose-300', warning: 'border-amber-500 text-amber-300', info: 'border-sky-500 text-sky-300' };
-      toast.className = `bg-slate-900 border ${colors[type]} px-4 py-3 rounded-2xl shadow-2xl flex items-center space-x-2.5 text-xs font-medium`;
-      toast.innerHTML = `<i class="fa-solid fa-circle-info"></i><span>${message}</span>`;
-      container.appendChild(toast);
-      setTimeout(() => toast.remove(), 3000);
-  }
-
-  window.addEventListener('DOMContentLoaded', () => {
-      fetchNasabahData().then(() => {
-          if (sessionNasabahId) registerFcmToken(sessionNasabahId);
-      });
-  });
-</script>
+    }
+  </script>
+</body>
 </html>
